@@ -1,7 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:wasseli/Helpers/helperMethods.dart';
+
 import 'package:wasseli/Widgets/customDrawer.dart';
 import 'package:wasseli/Widgets/divder.dart';
 
@@ -17,8 +20,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   GlobalKey<ScaffoldState> _scafoldKey = GlobalKey<ScaffoldState>();
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+  Position currentPostion;
+
+  void locatePostion() async {
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    currentPostion = position;
+
+    LatLng latLngPostion = LatLng(position.latitude, position.longitude);
+    CameraPosition cameraPosition = CameraPosition(target: latLngPostion, zoom: 18);
+    newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+    String address = await HelperMethods.searchCoordinateAddress(position);
+    print('ADDRESS: $address');
+  }
+
+  static final CameraPosition _ouargla = CameraPosition(
+    target: LatLng(31.9527, 5.3335),
     zoom: 14,
   );
 
@@ -27,11 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         key: _scafoldKey,
-        /*
-        appBar: AppBar(
-          title: Text('Wasseli'),
-          centerTitle: true,
-        ),*/
         drawer: CustomDrawer(),
         body: Stack(
           children: [
@@ -39,17 +51,22 @@ class _HomeScreenState extends State<HomeScreen> {
               mapType: MapType.normal,
               myLocationButtonEnabled: true,
               myLocationEnabled: true,
-              initialCameraPosition: _kGooglePlex,
+              compassEnabled: false,
+              zoomGesturesEnabled: true,
+              zoomControlsEnabled: false,
+              initialCameraPosition: _ouargla,
               onMapCreated: (GoogleMapController controller) {
                 _googleMapController.complete(controller);
                 newGoogleMapController = controller;
+
+                locatePostion();
               },
             ),
 
             //HamburgerButton for Drawer
             Positioned(
-              top: 35,
-              left: 22,
+              top: 25,
+              left: 25,
               child: GestureDetector(
                 onTap: () {
                   _scafoldKey.currentState.openDrawer();
