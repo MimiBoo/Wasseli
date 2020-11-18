@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
+import 'package:wasseli/Screens/search.dart';
 
 import 'package:wasseli/Widgets/customDrawer.dart';
 import 'package:wasseli/Widgets/divder.dart';
@@ -30,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     CameraPosition cameraPosition = CameraPosition(target: latLngPostion, zoom: 18);
     newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    String address = await HelperMethods.searchCoordinateAddress(position);
+    String address = await HelperMethods.searchCoordinateAddress(position, context);
     print('ADDRESS: $address');
   }
 
@@ -132,27 +135,32 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(fontSize: 20, fontFamily: 'Brand-Bold'),
                       ),
                       SizedBox(height: 20),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              blurRadius: 20,
-                              spreadRadius: 0.5,
-                              offset: Offset(0.7, 0.7),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              Icon(Icons.search, color: Colors.black),
-                              SizedBox(width: 10),
-                              Text('Search Drop Off'),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, SearchScreen.idScreen);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey,
+                                blurRadius: 20,
+                                spreadRadius: 0.5,
+                                offset: Offset(0.7, 0.7),
+                              ),
                             ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              children: [
+                                Icon(Icons.search, color: Colors.black),
+                                SizedBox(width: 10),
+                                Text('Search Drop Off'),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -164,7 +172,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Add home'),
+                              Text(
+                                Provider.of<AppData>(context).pickUpLocation != null ? Provider.of<AppData>(context).pickUpLocation.placeName : "Add Home",
+                              ),
                               SizedBox(height: 4),
                               Text(
                                 'Your living home address',
