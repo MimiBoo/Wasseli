@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,11 @@ class _HomeScreenState extends State<HomeScreen> {
   GoogleMapController newGoogleMapController;
 
   GlobalKey<ScaffoldState> _scafoldKey = GlobalKey<ScaffoldState>();
+
+  List<LatLng> pLineCoordinates = [];
+  Set<Polyline> polyLinesSet = {};
+  Set<Marker> markerSet = {};
+  Set<Circle> circleSet = {};
 
   Position currentPostion;
 
@@ -58,6 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
               compassEnabled: false,
               zoomGesturesEnabled: true,
               zoomControlsEnabled: false,
+              polylines: polyLinesSet,
+              markers: markerSet,
+              circles: circleSet,
               initialCameraPosition: _ouargla,
               onMapCreated: (GoogleMapController controller) {
                 _googleMapController.complete(controller);
@@ -232,6 +241,90 @@ class _HomeScreenState extends State<HomeScreen> {
     var details = await HelperMethods.obtainDirectionsDetails(pickUpLatLng, dropOffLatLng);
     Navigator.pop(context);
 
-    print("ENCODED POINTS: ${details.encodedPoints}");
+    //print("ENCODED POINTS: ${details.encodedPoints}");
+
+    PolylinePoints points = PolylinePoints();
+    List<PointLatLng> decodedPolyLineResult = points.decodePolyline(details.encodedPoints);
+    polyLinesSet.clear();
+    pLineCoordinates.clear();
+    if (decodedPolyLineResult.isNotEmpty) {
+      decodedPolyLineResult.forEach((PointLatLng pointLatLng) {
+        pLineCoordinates.add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
+      });
+    }
+
+    setState(() {
+      polyLinesSet.clear();
+      Polyline polyline = Polyline(
+        polylineId: PolylineId('route'),
+        color: Colors.black,
+        width: 5,
+        jointType: JointType.round,
+        points: pLineCoordinates,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        geodesic: true,
+      );
+
+      polyLinesSet.add(polyline);
+    });
+
+    LatLngBounds latLngBounds;
+    if (pickUpLatLng.latitude > dropOffLatLng.latitude && pickUpLatLng.longitude > dropOffLatLng.longitude) {
+      latLngBounds = LatLngBounds(
+        southwest: dropOffLatLng,
+        northeast: pickUpLatLng,
+      );
+    } else if (pickUpLatLng.latitude > dropOffLatLng.latitude) {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(dropOffLatLng.latitude, pickUpLatLng.longitude),
+        northeast: LatLng(pickUpLatLng.latitude, dropOffLatLng.longitude),
+      );
+    } else if (pickUpLatLng.longitude > dropOffLatLng.longitude) {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(pickUpLatLng.latitude, dropOffLatLng.longitude),
+        northeast: LatLng(dropOffLatLng.latitude, pickUpLatLng.longitude),
+      );
+    } else {
+      latLngBounds = LatLngBounds(southwest: pickUpLatLng, northeast: dropOffLatLng);
+    }
+
+    newGoogleMapController.animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 100));
+
+    Marker pickUpMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: InfoWindow(title: "YOU", snippet: initialPos.placeName),
+      position: pickUpLatLng,
+      markerId: MarkerId('Me'),
+    );
+    Marker dropOffMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: InfoWindow(title: "DESTINATION", snippet: finalPos.placeName),
+      position: dropOffLatLng,
+      markerId: MarkerId('Destination'),
+    );
+    Circle pickUpCircle = Circle(
+      fillColor: Colors.black,
+      center: pickUpLatLng,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: Colors.grey,
+      circleId: CircleId('Me'),
+    );
+    Circle dropOffCircle = Circle(
+      fillColor: Colors.black,
+      center: dropOffLatLng,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: Colors.grey,
+      circleId: CircleId('Destination'),
+    );
+
+    setState(() {
+      markerSet.add(pickUpMarker);
+      markerSet.add(dropOffMarker);
+      circleSet.add(pickUpCircle);
+      circleSet.add(dropOffCircle);
+    });
   }
 }
