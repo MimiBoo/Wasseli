@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
 import 'package:wasseli/Screens/search.dart';
-
 import 'package:wasseli/Widgets/customDrawer.dart';
 import 'package:wasseli/Widgets/divder.dart';
+import 'package:wasseli/Widgets/progressDialog.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String idScreen = 'home';
@@ -136,8 +137,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       SizedBox(height: 20),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, SearchScreen.idScreen);
+                        onTap: () async {
+                          var res = await Navigator.pushNamed(context, SearchScreen.idScreen);
+
+                          if (res == 'obtainDirection') {
+                            await getPlaceDirection();
+                          }
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -213,5 +218,20 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> getPlaceDirection() async {
+    var initialPos = Provider.of<AppData>(context, listen: false).pickUpLocation;
+    var finalPos = Provider.of<AppData>(context, listen: false).dropOffLocation;
+
+    var pickUpLatLng = LatLng(initialPos.latitude, initialPos.longitude);
+    var dropOffLatLng = LatLng(finalPos.latitude, finalPos.longitude);
+
+    showDialog(context: context, builder: (BuildContext context) => ProgressDialog('please wait.'));
+
+    var details = await HelperMethods.obtainDirectionsDetails(pickUpLatLng, dropOffLatLng);
+    Navigator.pop(context);
+
+    print("ENCODED POINTS: ${details.encodedPoints}");
   }
 }

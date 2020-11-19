@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasseli/DataHandler/appData.dart';
+import 'package:wasseli/Helpers/requestHelper.dart';
+import 'package:wasseli/Models/placePrediction.dart';
+import 'package:wasseli/Widgets/divder.dart';
+import 'package:wasseli/Widgets/predictions.dart';
+import 'package:wasseli/configMaps.dart';
 
 class SearchScreen extends StatefulWidget {
   static const String idScreen = 'search';
@@ -11,6 +16,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController _pickUpCtrl = TextEditingController();
   TextEditingController _dropOffCtrl = TextEditingController();
+
+  List<PlacePrediction> placePredictionList = [];
   @override
   Widget build(BuildContext context) {
     String placeAddress = Provider.of<AppData>(context).pickUpLocation.placeName;
@@ -95,6 +102,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: Padding(
                               padding: EdgeInsets.all(3),
                               child: TextField(
+                                onChanged: (value) {
+                                  findPlace(value);
+                                },
                                 controller: _dropOffCtrl,
                                 decoration: InputDecoration(
                                   hintText: 'Drop Off Location',
@@ -113,9 +123,54 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
+            //tile for display predictions
+
+            (placePredictionList.length > 0)
+                ? Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
+                    child: ListView.separated(
+                      padding: EdgeInsets.all(0),
+                      itemBuilder: (context, index) {
+                        return PredictionsTile(
+                          placePrediction: placePredictionList[index],
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) => DividerWidget(),
+                      itemCount: placePredictionList.length,
+                      shrinkWrap: true,
+                      physics: BouncingScrollPhysics(),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),
     );
+  }
+
+  void findPlace(String placeName) async {
+    var userLocation = Provider.of<AppData>(context, listen: false).userLocation;
+    if (placeName.isNotEmpty) {
+      String autoCompleteUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&location=${userLocation.latitude}, ${userLocation.longitude}&radius=100&components=country:dz&key=$placesKey&sessiontoken=1234567890';
+
+      var res = await RequestHelper.getRequest(autoCompleteUrl);
+
+      if (res == 'faied') {
+        return;
+      }
+      //print("RESPONSE: $res");
+      if (res['status'] == "OK") {
+        var predictions = res['predictions'];
+
+        var placesList = (predictions as List).map((e) => PlacePrediction.fromJson(e)).toList();
+
+        setState(() {
+          placePredictionList = placesList;
+        });
+      }
+    }
   }
 }

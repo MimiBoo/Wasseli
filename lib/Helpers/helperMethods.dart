@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/requestHelper.dart';
 import 'package:wasseli/Models/address.dart';
+import 'package:wasseli/Models/directionDetails.dart';
 import 'package:wasseli/configMaps.dart';
 
 class HelperMethods {
@@ -23,9 +25,29 @@ class HelperMethods {
       userPickUpAddress.latitude = position.latitude;
       userPickUpAddress.placeName = placeAddress;
 
-      Provider.of<AppData>(context, listen: false).updatepickUpLocationAddress(userPickUpAddress);
+      Provider.of<AppData>(context, listen: false).updatePickUpLocationAddress(userPickUpAddress);
     }
 
     return placeAddress;
+  }
+
+  static Future<DirectionDetails> obtainDirectionsDetails(LatLng initialPos, LatLng finalPos) async {
+    String directionsUrl = 'https://maps.googleapis.com/maps/api/directions/json?origin=${initialPos.latitude},${initialPos.longitude}&destination=${finalPos.latitude},${finalPos.longitude}&key=$directionKey';
+
+    var res = await RequestHelper.getRequest(directionsUrl);
+
+    if (res == "failed") {
+      return null;
+    }
+
+    DirectionDetails directionDetails = DirectionDetails();
+
+    directionDetails.encodedPoints = res['routes'][0]['overview_polyline']['points'];
+    directionDetails.distanceText = res['routes'][0]['legs'][0]['distance']['text'];
+    directionDetails.distanceValue = res['routes'][0]['legs'][0]['distance']['value'];
+    directionDetails.durationText = res['routes'][0]['legs'][0]['duration']['text'];
+    directionDetails.durationValue = res['routes'][0]['legs'][0]['duration']['value'];
+
+    return directionDetails;
   }
 }
