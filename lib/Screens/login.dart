@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wasseli/DataHandler/appData.dart';
+import 'package:wasseli/Helpers/helperMethods.dart';
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Screens/register.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
@@ -144,16 +145,22 @@ class LoginScreen extends StatelessWidget {
           //print("DATA:: ${snap.value}");
 
           Provider.of<AppData>(context, listen: false).updateUserData(phone, email, name);
+
+          HelperMethods.saveUserLoggedInSharedPrefernce(true);
+
           Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
           displayToatMessage('Logged In', context);
         } else {
           Navigator.pop(context);
+          HelperMethods.saveUserLoggedInSharedPrefernce(false);
           _firebaseAuth.signOut();
+
           displayToatMessage('No record exist for this email. Please create an account', context);
         }
       });
     } else {
       //Error occured
+      HelperMethods.saveUserLoggedInSharedPrefernce(false);
       Navigator.pop(context);
       displayToatMessage("Error: Something went wrong.", context);
     }

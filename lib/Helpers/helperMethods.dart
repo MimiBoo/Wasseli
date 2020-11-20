@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/requestHelper.dart';
 import 'package:wasseli/Models/address.dart';
@@ -9,6 +10,8 @@ import 'package:wasseli/Models/directionDetails.dart';
 import 'package:wasseli/configMaps.dart';
 
 class HelperMethods {
+  static String sharedPreferenceUserLoggedInKey = "ISLOGGEDIN";
+
   static Future<String> searchCoordinateAddress(Position position, BuildContext context) async {
     String placeAddress = "";
     String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$geoKey";
@@ -49,5 +52,15 @@ class HelperMethods {
     directionDetails.durationValue = res['routes'][0]['legs'][0]['duration']['value'];
 
     return directionDetails;
+  }
+
+  static Future<bool> saveUserLoggedInSharedPrefernce(bool isUserLoggedIn) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.setBool(sharedPreferenceUserLoggedInKey, isUserLoggedIn);
+  }
+
+  static Future<bool> getUserLoggedInSharedPrefernce() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.get(sharedPreferenceUserLoggedInKey);
   }
 }

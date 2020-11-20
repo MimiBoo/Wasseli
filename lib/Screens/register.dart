@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wasseli/Helpers/helperMethods.dart';
 
 import 'package:wasseli/Screens/login.dart';
 import 'package:wasseli/Screens/home.dart';
@@ -136,8 +137,7 @@ class RegisterScreen extends StatelessWidget {
             ),
             FlatButton(
               onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, LoginScreen.idScreen, (route) => false);
+                Navigator.pushNamedAndRemoveUntil(context, LoginScreen.idScreen, (route) => false);
               },
               child: Text('Already have an account? Login here'),
             ),
@@ -179,11 +179,12 @@ class RegisterScreen extends StatelessWidget {
 
       userRef.child(user.uid).set(userDataMap);
       displayToatMessage('User has been created', context);
+      HelperMethods.saveUserLoggedInSharedPrefernce(true);
 
-      Navigator.pushNamedAndRemoveUntil(
-          context, HomeScreen.idScreen, (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
     } else {
       //Error occured
+      HelperMethods.saveUserLoggedInSharedPrefernce(false);
       Navigator.pop(context);
       displayToatMessage("Error: New user has not been created", context);
     }

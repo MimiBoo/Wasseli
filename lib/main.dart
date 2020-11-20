@@ -13,38 +13,51 @@ import 'package:wasseli/Screens/search.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => AppData(),
+    child: MyApp(),
+  ));
 }
 
 DatabaseReference userRef = FirebaseDatabase().reference().child('users');
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    Provider.of<AppData>(context, listen: false).checkUserAuthState();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown
     ]);
-    return ChangeNotifierProvider(
-      create: (context) => AppData(),
-      child: MaterialApp(
-        title: 'Wasseli',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-          fontFamily: 'Brand-Regular',
-        ),
-        initialRoute: LoginScreen.idScreen,
-        routes: {
-          RegisterScreen.idScreen: (context) => RegisterScreen(),
-          LoginScreen.idScreen: (context) => LoginScreen(),
-          HomeScreen.idScreen: (context) => HomeScreen(),
-          SearchScreen.idScreen: (context) => SearchScreen(),
-          ProfilePage.idScreen: (context) => ProfilePage(),
-        },
+    bool status = context.watch<AppData>().isLoggedIn;
+    return MaterialApp(
+      title: 'Wasseli',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: 'Brand-Regular',
       ),
+      initialRoute: status ? HomeScreen.idScreen : LoginScreen.idScreen,
+      routes: {
+        RegisterScreen.idScreen: (context) => RegisterScreen(),
+        LoginScreen.idScreen: (context) => LoginScreen(),
+        HomeScreen.idScreen: (context) => HomeScreen(),
+        SearchScreen.idScreen: (context) => SearchScreen(),
+        ProfilePage.idScreen: (context) => ProfilePage(),
+      },
     );
   }
 }
