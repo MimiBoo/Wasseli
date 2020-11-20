@@ -1,34 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wasseli/DataHandler/appData.dart';
+import 'package:wasseli/Screens/profile.dart';
 import 'package:wasseli/Widgets/divder.dart';
 
 class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var appData = Provider.of<AppData>(context, listen: false);
     return Container(
       color: Colors.white,
       width: 255,
       child: Drawer(
-        child: ListView(
+        child: Column(
           children: [
             Container(
-              height: 165,
+              height: 160,
               child: DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
-                child: Row(
-                  children: [
-                    Image.asset('assets/images/user_icon.png', height: 65, width: 65),
-                    SizedBox(width: 16),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Profile Name', style: TextStyle(fontSize: 16, fontFamily: 'Brand-Bold')),
-                        SizedBox(width: 16),
-                        Text('View Profile', style: TextStyle())
-                      ],
-                    ),
-                  ],
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.of(context).pushNamed(ProfilePage.idScreen);
+                  },
+                  child: Row(
+                    children: [
+                      Image.asset('assets/images/user_icon.png', height: 50, width: 50),
+                      SizedBox(width: 16),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(appData.fullName, style: TextStyle(fontSize: 16, fontFamily: 'Brand-Bold')),
+                          //SizedBox(height: 16),
+                          Text(
+                            'View Profile',
+                            style: TextStyle(
+                              fontSize: 12,
+                              decorationStyle: TextDecorationStyle.solid,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -48,6 +65,10 @@ class CustomDrawer extends StatelessWidget {
               leading: Icon(Icons.info),
               title: Text('About', style: TextStyle(fontSize: 15)),
             ),
+            Expanded(
+              child: Container(),
+            ),
+            Text('V0.1.0 Beta', style: TextStyle(fontSize: 15)),
           ],
         ),
       ),

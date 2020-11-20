@@ -6,6 +6,8 @@ class AppData extends ChangeNotifier {
   Address pickUpLocation, dropOffLocation;
   LatLng _userLocation;
 
+  String phoneNumber, emailAddress, fullName;
+
   LatLng get userLocation => _userLocation;
 
   void updatePickUpLocationAddress(Address pickUpAddress) {
@@ -16,6 +18,14 @@ class AppData extends ChangeNotifier {
 
   void updateDropOffLocationAddress(Address dropOffAddress) {
     dropOffLocation = dropOffAddress;
+
+    notifyListeners();
+  }
+
+  void updateUserData(String phone, String email, String name) {
+    phoneNumber = phone;
+    fullName = name;
+    emailAddress = email;
 
     notifyListeners();
   }

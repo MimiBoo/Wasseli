@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
     zoom: 14,
   );
 
+  double bottomMapPadding = 0;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -58,8 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Stack(
           children: [
             GoogleMap(
+              padding: EdgeInsets.only(bottom: bottomMapPadding),
               mapType: MapType.normal,
-              myLocationButtonEnabled: true,
+              myLocationButtonEnabled: false,
               myLocationEnabled: true,
               compassEnabled: false,
               zoomGesturesEnabled: true,
@@ -73,13 +75,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 newGoogleMapController = controller;
 
                 locatePostion();
+
+                setState(() {
+                  bottomMapPadding = 270;
+                });
               },
             ),
 
             //HamburgerButton for Drawer
             Positioned(
-              top: 25,
-              left: 25,
+              top: 10,
+              left: 10,
               child: GestureDetector(
                 onTap: () {
                   _scafoldKey.currentState.openDrawer();
@@ -109,6 +115,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+            Positioned(
+              bottom: 280,
+              right: 10,
+              child: GestureDetector(
+                onTap: () {
+                  locatePostion();
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 6,
+                        spreadRadius: 0.5,
+                        offset: Offset(0.7, 0.7),
+                      ),
+                    ],
+                  ),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.location_searching,
+                      color: Colors.black,
+                      //size: 30,
+                    ),
+                    radius: 22,
+                  ),
+                ),
+              ),
+            ),
+            //Search bottom
             Positioned(
               left: 0,
               right: 0,
@@ -306,7 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Circle pickUpCircle = Circle(
       fillColor: Colors.black,
       center: pickUpLatLng,
-      radius: 12,
+      radius: 8,
       strokeWidth: 4,
       strokeColor: Colors.grey,
       circleId: CircleId('Me'),
@@ -314,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Circle dropOffCircle = Circle(
       fillColor: Colors.black,
       center: dropOffLatLng,
-      radius: 12,
+      radius: 8,
       strokeWidth: 4,
       strokeColor: Colors.grey,
       circleId: CircleId('Destination'),

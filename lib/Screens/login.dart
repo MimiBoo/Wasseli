@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Screens/register.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
@@ -100,8 +102,7 @@ class LoginScreen extends StatelessWidget {
             ),
             FlatButton(
               onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, RegisterScreen.idScreen, (route) => false);
+                Navigator.pushNamedAndRemoveUntil(context, RegisterScreen.idScreen, (route) => false);
               },
               child: Text('Don\'t have an account? Register here'),
             ),
@@ -137,15 +138,18 @@ class LoginScreen extends StatelessWidget {
 
       userRef.child(user.uid).once().then((DataSnapshot snap) {
         if (snap.value != null) {
-          Navigator.pushNamedAndRemoveUntil(
-              context, HomeScreen.idScreen, (route) => false);
+          var email = snap.value['email'];
+          var name = snap.value['name'];
+          var phone = snap.value['phone'];
+          //print("DATA:: ${snap.value}");
+
+          Provider.of<AppData>(context, listen: false).updateUserData(phone, email, name);
+          Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
           displayToatMessage('Logged In', context);
         } else {
           Navigator.pop(context);
           _firebaseAuth.signOut();
-          displayToatMessage(
-              'No record exist for this email. Please create an account',
-              context);
+          displayToatMessage('No record exist for this email. Please create an account', context);
         }
       });
     } else {

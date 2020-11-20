@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Screens/login.dart';
+import 'package:wasseli/Screens/profile.dart';
 import 'package:wasseli/Screens/register.dart';
 import 'package:wasseli/Screens/search.dart';
 
@@ -35,12 +36,13 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           fontFamily: 'Brand-Regular',
         ),
-        initialRoute: HomeScreen.idScreen,
+        initialRoute: LoginScreen.idScreen,
         routes: {
           RegisterScreen.idScreen: (context) => RegisterScreen(),
           LoginScreen.idScreen: (context) => LoginScreen(),
           HomeScreen.idScreen: (context) => HomeScreen(),
           SearchScreen.idScreen: (context) => SearchScreen(),
+          ProfilePage.idScreen: (context) => ProfilePage(),
         },
       ),
     );
