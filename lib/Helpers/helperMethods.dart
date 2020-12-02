@@ -63,4 +63,15 @@ class HelperMethods {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.get(sharedPreferenceUserLoggedInKey);
   }
+
+  static int calculateFares(DirectionDetails directionDetails) {
+    double timeTravelfare = (directionDetails.durationValue / 60) * 0.2;
+    double distanceTravelfare = (directionDetails.distanceValue / 1000) * 0.2;
+
+    double totalPrice = timeTravelfare + distanceTravelfare;
+
+    double totalLocal = totalPrice * 129.24;
+
+    return totalLocal.truncate();
+  }
 }
