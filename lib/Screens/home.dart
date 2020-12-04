@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   double rideDetailsHeight = 0;
   double searcHeight = 270;
+  double requestHeight = 0;
 
   DirectionDetails tripDirectionDetails;
 
@@ -58,6 +60,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     locatePostion();
   }
 
+  void displayRideRequestContainer() {
+    setState(() {
+      requestHeight = 250;
+      rideDetailsHeight = 0;
+      bottomMapPadding = 250;
+      drawerOpen = true;
+    });
+  }
+
+  //
   void displayRideDetailsContainer() async {
     await getPlaceDirection();
 
@@ -156,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
+            //
             Positioned(
               bottom: bottomMapPadding + 10,
               right: 10,
@@ -308,6 +321,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
+            //
             Positioned(
               bottom: 0,
               left: 0,
@@ -397,7 +411,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: RaisedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              displayRideRequestContainer();
+                            },
                             color: Theme.of(context).accentColor,
                             child: Padding(
                               padding: EdgeInsets.all(17),
@@ -425,6 +441,73 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
+                ),
+              ),
+            ),
+            //
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: requestHeight,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 16,
+                      spreadRadius: 0.5,
+                      offset: Offset(0.7, 0.7),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 12),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        RotateAnimatedTextKit(
+                          repeatForever: true,
+                          text: [
+                            "Requesting a Ride..",
+                            "Finding a Driver..",
+                            "Please wait.."
+                          ],
+                          textStyle: TextStyle(fontSize: 30.0, fontFamily: "Brand-Regular"),
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 22),
+                    Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(26),
+                        border: Border.all(width: 2, color: Colors.black54),
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        size: 26,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      child: Text(
+                        'Cancel Ride',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14.0, fontFamily: "Brand-Regular"),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -43,6 +43,7 @@ dependencies:
   shared_preferences: ^0.5.12+4
 
   font_awesome_flutter: ^8.10.0
+  animated_text_kit: ^2.5.4
 
 dev_dependencies:
   flutter_test:
