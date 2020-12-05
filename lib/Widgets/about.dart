@@ -38,7 +38,9 @@ class WasseliAboutDialog extends StatelessWidget {
                     height: 30,
                     width: 60,
                     child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       //color: Colors.amber,
                       child: Text(
                         'Ok',
