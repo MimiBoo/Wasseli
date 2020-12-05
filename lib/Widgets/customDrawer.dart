@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Screens/login.dart';
 import 'package:wasseli/Screens/profile.dart';
+import 'package:wasseli/Widgets/about.dart';
 import 'package:wasseli/Widgets/divder.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -65,9 +66,19 @@ class CustomDrawer extends StatelessWidget {
               leading: Icon(Icons.person),
               title: Text('Visit Profile', style: TextStyle(fontSize: 15)),
             ),
-            ListTile(
-              leading: Icon(Icons.info),
-              title: Text('About', style: TextStyle(fontSize: 15)),
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return WasseliAboutDialog();
+                  },
+                );
+              },
+              child: ListTile(
+                leading: Icon(Icons.info),
+                title: Text('About', style: TextStyle(fontSize: 15)),
+              ),
             ),
             Expanded(
               child: Container(),
