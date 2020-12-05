@@ -1,11 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/requestHelper.dart';
 import 'package:wasseli/Models/address.dart';
+import 'package:wasseli/Models/allUsers.dart';
 import 'package:wasseli/Models/directionDetails.dart';
 import 'package:wasseli/configMaps.dart';
 
@@ -54,16 +56,6 @@ class HelperMethods {
     return directionDetails;
   }
 
-  static Future<bool> saveUserLoggedInSharedPrefernce(bool isUserLoggedIn) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await prefs.setBool(sharedPreferenceUserLoggedInKey, isUserLoggedIn);
-  }
-
-  static Future<bool> getUserLoggedInSharedPrefernce() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await prefs.get(sharedPreferenceUserLoggedInKey);
-  }
-
   static int calculateFares(DirectionDetails directionDetails) {
     double timeTravelfare = (directionDetails.durationValue / 60) * 0.2;
     double distanceTravelfare = (directionDetails.distanceValue / 1000) * 0.2;
@@ -73,5 +65,19 @@ class HelperMethods {
     double totalLocal = totalPrice * 129.24;
 
     return totalLocal.truncate();
+  }
+
+  static void getCurrentOnlineUserInfo() async {
+    firebaseUser = await FirebaseAuth.instance.currentUser;
+
+    String userId = firebaseUser.uid;
+
+    DatabaseReference ref = FirebaseDatabase.instance.reference().child('users').child(userId);
+
+    ref.once().then((DataSnapshot snap) {
+      if (snap.value != null) {
+        currentUser = Users.fromSnapshot(snap);
+      }
+    });
   }
 }

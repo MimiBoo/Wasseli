@@ -179,12 +179,10 @@ class RegisterScreen extends StatelessWidget {
 
       userRef.child(user.uid).set(userDataMap);
       displayToatMessage('User has been created', context);
-      HelperMethods.saveUserLoggedInSharedPrefernce(true);
 
       Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
     } else {
       //Error occured
-      HelperMethods.saveUserLoggedInSharedPrefernce(false);
       Navigator.pop(context);
       displayToatMessage("Error: New user has not been created", context);
     }

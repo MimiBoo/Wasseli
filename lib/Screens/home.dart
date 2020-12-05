@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -15,6 +16,7 @@ import 'package:wasseli/Screens/search.dart';
 import 'package:wasseli/Widgets/customDrawer.dart';
 import 'package:wasseli/Widgets/divder.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
+import 'package:wasseli/configMaps.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String idScreen = 'home';
@@ -39,8 +41,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   double rideDetailsHeight = 0;
   double searcHeight = 270;
   double requestHeight = 0;
+  double bottomMapPadding = 0;
 
   DirectionDetails tripDirectionDetails;
+
+  DatabaseReference requestRef;
 
   bool drawerOpen = true;
 
@@ -49,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       drawerOpen = true;
       searcHeight = 270;
       rideDetailsHeight = 0;
+      requestHeight = 0;
       bottomMapPadding = 270;
 
       polyLinesSet.clear();
@@ -67,6 +73,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       bottomMapPadding = 250;
       drawerOpen = true;
     });
+
+    saveRideRequest();
   }
 
   //
@@ -81,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+  //
   void locatePostion() async {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     currentPostion = position;
@@ -93,18 +102,65 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     print('ADDRESS: $address');
   }
 
+  //
   static final CameraPosition _ouargla = CameraPosition(
     target: LatLng(31.9527, 5.3335),
     zoom: 14,
   );
+  //
+  void saveRideRequest() {
+    requestRef = FirebaseDatabase.instance.reference().child('rides').push();
 
-  double bottomMapPadding = 0;
+    var pickUp = Provider.of<AppData>(context, listen: false).pickUpLocation;
+    var dropOff = Provider.of<AppData>(context, listen: false).dropOffLocation;
+
+    Map pickUpLocMap = {
+      'lat': pickUp.latitude.toString(),
+      'long': pickUp.longitude.toString(),
+    };
+
+    Map dropOffLocMap = {
+      'lat': dropOff.latitude.toString(),
+      'long': dropOff.longitude.toString(),
+    };
+
+    Map rideInfo = {
+      'driver_id': 'waiting',
+      'payment_method': 'cash',
+      'pickup': pickUpLocMap,
+      'dropoff': dropOffLocMap,
+      'created_at': DateTime.now().toString(),
+      'rider_name': currentUser.name,
+      'rider_phone': currentUser.phone,
+      'pickup_address': pickUp.placeName,
+      'dropoff_address': dropOff.placeName,
+    };
+
+    requestRef.set(rideInfo);
+  }
+
+  //
+  void cancelRideRequest() {
+    requestRef.remove();
+  }
+
+  //
+
+  @override
+  void initState() {
+    super.initState();
+
+    HelperMethods.getCurrentOnlineUserInfo();
+    Provider.of<AppData>(context, listen: false).updateUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var appData = Provider.of<AppData>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         key: _scafoldKey,
-        drawer: CustomDrawer(),
+        drawer: CustomDrawer(appData),
         body: Stack(
           children: [
             GoogleMap(
@@ -130,7 +186,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 });
               },
             ),
-
             //HamburgerButton for Drawer
             Positioned(
               top: 10,
@@ -485,17 +540,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ],
                     ),
                     SizedBox(height: 22),
-                    Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(26),
-                        border: Border.all(width: 2, color: Colors.black54),
-                      ),
-                      child: Icon(
-                        Icons.close,
-                        size: 26,
+                    GestureDetector(
+                      onTap: () {
+                        cancelRideRequest();
+                        restApp();
+                      },
+                      child: Container(
+                        height: 60,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(26),
+                          border: Border.all(width: 2, color: Colors.black54),
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          size: 26,
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),

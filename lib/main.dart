@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -30,18 +31,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  void initState() {
-    Provider.of<AppData>(context, listen: false).checkUserAuthState();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown
     ]);
-    bool status = context.watch<AppData>().isLoggedIn;
+
     return MaterialApp(
       title: 'Wasseli',
       debugShowCheckedModeBanner: false,
@@ -50,7 +45,7 @@ class _MyAppState extends State<MyApp> {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         fontFamily: 'Brand-Regular',
       ),
-      initialRoute: status ? HomeScreen.idScreen : LoginScreen.idScreen,
+      initialRoute: FirebaseAuth.instance.currentUser == null ? LoginScreen.idScreen : HomeScreen.idScreen,
       routes: {
         RegisterScreen.idScreen: (context) => RegisterScreen(),
         LoginScreen.idScreen: (context) => LoginScreen(),

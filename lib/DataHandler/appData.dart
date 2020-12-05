@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:wasseli/Helpers/helperMethods.dart';
 import 'package:wasseli/Models/address.dart';
+import 'package:wasseli/main.dart';
 
 class AppData extends ChangeNotifier {
   Address pickUpLocation, dropOffLocation;
@@ -25,18 +27,15 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateUserData(String phone, String email, String name) {
-    phoneNumber = phone;
-    fullName = name;
-    emailAddress = email;
-
-    notifyListeners();
-  }
-
-  void checkUserAuthState() async {
-    await HelperMethods.getUserLoggedInSharedPrefernce().then((value) {
-      isLoggedIn = value;
-    });
+  void updateUserData() {
+    var user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      userRef.child(user.uid).once().then((DataSnapshot snap) {
+        phoneNumber = snap.value['email'];
+        fullName = snap.value['name'];
+        emailAddress = snap.value['phone'];
+      });
+    }
     notifyListeners();
   }
 }

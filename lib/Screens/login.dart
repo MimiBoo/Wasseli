@@ -136,31 +136,10 @@ class LoginScreen extends StatelessWidget {
 
     if (user != null) {
       //save user info to database
-
-      userRef.child(user.uid).once().then((DataSnapshot snap) {
-        if (snap.value != null) {
-          var email = snap.value['email'];
-          var name = snap.value['name'];
-          var phone = snap.value['phone'];
-          //print("DATA:: ${snap.value}");
-
-          Provider.of<AppData>(context, listen: false).updateUserData(phone, email, name);
-
-          HelperMethods.saveUserLoggedInSharedPrefernce(true);
-
-          Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
-          displayToatMessage('Logged In', context);
-        } else {
-          Navigator.pop(context);
-          HelperMethods.saveUserLoggedInSharedPrefernce(false);
-          _firebaseAuth.signOut();
-
-          displayToatMessage('No record exist for this email. Please create an account', context);
-        }
-      });
+      Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
+      displayToatMessage('Logged In', context);
     } else {
       //Error occured
-      HelperMethods.saveUserLoggedInSharedPrefernce(false);
       Navigator.pop(context);
       displayToatMessage("Error: Something went wrong.", context);
     }
