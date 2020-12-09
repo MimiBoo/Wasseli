@@ -3,13 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Screens/login.dart';
-import 'package:wasseli/Screens/profile.dart';
-import 'package:wasseli/Screens/register.dart';
-import 'package:wasseli/Screens/search.dart';
+import 'package:wasseli/localization/localization.dart';
+import 'package:wasseli/routes/custom_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,20 +23,32 @@ void main() async {
 DatabaseReference userRef = FirebaseDatabase().reference().child('users');
 
 class MyApp extends StatefulWidget {
-  // This widget is the root of your application.
+  static void setLocale(BuildContext context, Locale locale) {
+    _MyAppState state = context.findAncestorStateOfType<_MyAppState>();
+    state.setLocale(locale);
+  }
 
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  Locale _locale;
+  //
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
+
+  //
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown
     ]);
-
+    //
     return MaterialApp(
       title: 'Wasseli',
       debugShowCheckedModeBanner: false,
@@ -45,14 +57,27 @@ class _MyAppState extends State<MyApp> {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         fontFamily: 'Brand-Regular',
       ),
-      initialRoute: FirebaseAuth.instance.currentUser == null ? LoginScreen.idScreen : HomeScreen.idScreen,
-      routes: {
-        RegisterScreen.idScreen: (context) => RegisterScreen(),
-        LoginScreen.idScreen: (context) => LoginScreen(),
-        HomeScreen.idScreen: (context) => HomeScreen(),
-        SearchScreen.idScreen: (context) => SearchScreen(),
-        ProfilePage.idScreen: (context) => ProfilePage(),
+      locale: _locale,
+      localizationsDelegates: [
+        DemoLocalization.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en', 'US'),
+        Locale('ar', 'DZ'),
+      ],
+      localeResolutionCallback: (deviceLocale, supportedLocales) {
+        for (var locale in supportedLocales) {
+          if (locale.languageCode == deviceLocale.languageCode && locale.countryCode == deviceLocale.countryCode) {
+            return deviceLocale;
+          }
+        }
+        return supportedLocales.first;
       },
+      onGenerateRoute: CustomRouter.allRoutes,
+      initialRoute: FirebaseAuth.instance.currentUser == null ? LoginScreen.idScreen : HomeScreen.idScreen,
     );
   }
 }

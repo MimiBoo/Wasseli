@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:wasseli/Helpers/helperMethods.dart';
 
 import 'package:wasseli/Screens/login.dart';
 import 'package:wasseli/Screens/home.dart';

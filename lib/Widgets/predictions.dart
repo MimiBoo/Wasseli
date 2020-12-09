@@ -5,7 +5,7 @@ import 'package:wasseli/Helpers/requestHelper.dart';
 import 'package:wasseli/Models/address.dart';
 import 'package:wasseli/Models/placePrediction.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
-import 'package:wasseli/configMaps.dart';
+import 'package:wasseli/config.dart';
 
 class PredictionsTile extends StatelessWidget {
   final PlacePrediction placePrediction;

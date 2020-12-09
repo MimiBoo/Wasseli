@@ -1,0 +1,14 @@
+{
+    "login_title": "Login",
+    "login_button": "Login",
+    "login_email": "Email",
+    "login_password": "Password",
+    "no_account_register": "Don't have an account? Register here",
+    "register_title": "Register",
+    "register_button": "Register",
+    "register_full_name": "Full Name",
+    "register_email": "Email",
+    "register_phone": "Phone number",
+    "register_password": "Password",
+    "have_account_login": "Already have an account? Login here"
+}

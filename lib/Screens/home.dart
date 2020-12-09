@@ -16,7 +16,7 @@ import 'package:wasseli/Screens/search.dart';
 import 'package:wasseli/Widgets/customDrawer.dart';
 import 'package:wasseli/Widgets/divder.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
-import 'package:wasseli/configMaps.dart';
+import 'package:wasseli/config.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String idScreen = 'home';

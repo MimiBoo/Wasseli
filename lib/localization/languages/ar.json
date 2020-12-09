@@ -1,0 +1,14 @@
+{
+    "login_title": "تسجيل الدخول",
+    "login_button": "تسجيل الدخول",
+    "login_email": "الإمايل",
+    "login_password": "كلمة السر",
+    "no_account_register": "ليس لديك حساب؟ أنشىء واحد الان",
+    "register_title": "أنشأ حساب",
+    "register_button": "أنشأ حساب",
+    "register_full_name": "الاسم الكامل",
+    "register_email": "الإمايل",
+    "register_phone": "رقم الهاتف",
+    "register_password": "كلمة السر",
+    "have_account_login": "لذيك حساب من قبل؟ سجل الدخول"
+}

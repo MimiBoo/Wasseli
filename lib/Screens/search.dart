@@ -5,7 +5,7 @@ import 'package:wasseli/Helpers/requestHelper.dart';
 import 'package:wasseli/Models/placePrediction.dart';
 import 'package:wasseli/Widgets/divder.dart';
 import 'package:wasseli/Widgets/predictions.dart';
-import 'package:wasseli/configMaps.dart';
+import 'package:wasseli/config.dart';
 
 class SearchScreen extends StatefulWidget {
   static const String idScreen = 'search';

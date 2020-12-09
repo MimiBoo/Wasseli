@@ -31,9 +31,9 @@ class AppData extends ChangeNotifier {
     var user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       userRef.child(user.uid).once().then((DataSnapshot snap) {
-        phoneNumber = snap.value['email'];
+        phoneNumber = snap.value['phone'];
         fullName = snap.value['name'];
-        emailAddress = snap.value['phone'];
+        emailAddress = snap.value['email'];
       });
     }
     notifyListeners();

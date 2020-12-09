@@ -9,7 +9,7 @@ import 'package:wasseli/Helpers/requestHelper.dart';
 import 'package:wasseli/Models/address.dart';
 import 'package:wasseli/Models/allUsers.dart';
 import 'package:wasseli/Models/directionDetails.dart';
-import 'package:wasseli/configMaps.dart';
+import 'package:wasseli/config.dart';
 
 class HelperMethods {
   static String sharedPreferenceUserLoggedInKey = "ISLOGGEDIN";
@@ -67,8 +67,8 @@ class HelperMethods {
     return totalLocal.truncate();
   }
 
-  static void getCurrentOnlineUserInfo() async {
-    firebaseUser = await FirebaseAuth.instance.currentUser;
+  static void getCurrentOnlineUserInfo() {
+    firebaseUser = FirebaseAuth.instance.currentUser;
 
     String userId = firebaseUser.uid;
 

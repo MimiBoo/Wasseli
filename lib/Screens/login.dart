@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:wasseli/DataHandler/appData.dart';
-import 'package:wasseli/Helpers/helperMethods.dart';
+
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Screens/register.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
+import 'package:wasseli/localization/language.dart';
+import 'package:wasseli/localization/localization.dart';
 import 'package:wasseli/main.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -16,8 +16,26 @@ class LoginScreen extends StatelessWidget {
   TextEditingController passwordCtrl = TextEditingController();
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  //
+  _changeLanguage(BuildContext context, Language language) {
+    Locale _temp;
+    switch (language.languageCode) {
+      case 'en':
+        _temp = Locale(language.languageCode, 'US');
+        break;
+      case 'ar':
+        _temp = Locale(language.languageCode, 'DZ');
+        break;
+      default:
+        _temp = Locale(language.languageCode, 'DZ');
+    }
+
+    MyApp.setLocale(context, _temp);
+  }
+
   @override
   Widget build(BuildContext context) {
+    var lang = DemoLocalization.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -32,7 +50,7 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 1),
             Text(
-              'Login',
+              lang.getTranslatedValue('login_title'),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 24, fontFamily: 'Brand-Bold'),
             ),
@@ -45,7 +63,7 @@ class LoginScreen extends StatelessWidget {
                     controller: emailCtrl,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      hintText: 'Email',
+                      hintText: lang.getTranslatedValue('login_email'),
                       hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
@@ -57,7 +75,7 @@ class LoginScreen extends StatelessWidget {
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: 'Password',
+                      hintText: lang.getTranslatedValue('login_password'),
                       hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
@@ -71,7 +89,7 @@ class LoginScreen extends StatelessWidget {
                       height: 50,
                       child: Center(
                         child: Text(
-                          'Login',
+                          lang.getTranslatedValue('login_button'),
                           style: TextStyle(
                             fontFamily: 'Brand-Bold',
                             fontSize: 18,
@@ -105,7 +123,30 @@ class LoginScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(context, RegisterScreen.idScreen, (route) => false);
               },
-              child: Text('Don\'t have an account? Register here'),
+              child: Text(lang.getTranslatedValue('no_account_register')),
+            ),
+            DropdownButton(
+              underline: SizedBox(width: 0),
+              icon: Icon(
+                Icons.language,
+                color: Colors.black,
+              ),
+              items: Language.languageList()
+                  .map<DropdownMenuItem<Language>>(
+                    (lang) => DropdownMenuItem<Language>(
+                      value: lang,
+                      child: Row(
+                        children: [
+                          Text(lang.flag),
+                          Text(lang.name),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (Language language) {
+                _changeLanguage(context, language);
+              },
             ),
           ],
         ),
