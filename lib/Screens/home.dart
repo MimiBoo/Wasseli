@@ -46,8 +46,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   DirectionDetails tripDirectionDetails;
 
   DatabaseReference requestRef;
+  DatabaseReference availableRef;
 
   bool drawerOpen = true;
+  String temp = '';
 
   void restApp() {
     setState(() {
@@ -145,7 +147,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   //
+  Future<void> getDrivers() async {
+    FirebaseDatabase.instance.reference().child('available').onValue.listen((event) {
+      var value = event.snapshot.value;
+      for (final key in value.keys) {
+        print(value[key]);
+      }
+    });
 
+    /*
+    List<Marker> drivers = [];
+    final value = data.value as Map;
+    for (final key in value.keys) {
+      //Map<dynamic, dynamic> map = value[key];
+      Marker driverMarker = Marker(
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        //infoWindow: InfoWindow(title: "YOU", snippet: initialPos.placeName),
+        position: LatLng(value[key]['location']['lat'], value[key]['location']['long']),
+        markerId: MarkerId(value[key]['driver_id']),
+      );
+      drivers.add(driverMarker);
+      print(value[key]['driver_id']);
+    }
+    drivers.forEach((Marker marker) {
+      setState(() {
+        markerSet.add(marker);
+      });
+    });*/
+  }
+
+  //
   @override
   void initState() {
     super.initState();
@@ -154,6 +185,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     Provider.of<AppData>(context, listen: false).updateUserData();
   }
 
+  //
   @override
   Widget build(BuildContext context) {
     var appData = Provider.of<AppData>(context, listen: false);
@@ -224,12 +256,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
             //
+            Center(
+              child: Text(temp),
+            ),
             Positioned(
               bottom: bottomMapPadding + 10,
               right: 10,
               child: GestureDetector(
                 onTap: () {
-                  locatePostion();
+                  //locatePostion();
+                  getDrivers();
                 },
                 child: Container(
                   decoration: BoxDecoration(
