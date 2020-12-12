@@ -147,33 +147,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   //
-  Future<void> getDrivers() async {
+  void getDrivers() {
     FirebaseDatabase.instance.reference().child('available').onValue.listen((event) {
-      var value = event.snapshot.value;
+      var value = event.snapshot.value as Map;
+      List<Marker> drivers = [];
       for (final key in value.keys) {
+        Marker driverMarker = Marker(
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          //infoWindow: InfoWindow(title: "YOU", snippet: initialPos.placeName),
+          position: LatLng(value[key]['location']['lat'], value[key]['location']['long']),
+          markerId: MarkerId(value[key]['driver_id']),
+        );
+        drivers.add(driverMarker);
         print(value[key]);
       }
-    });
-
-    /*
-    List<Marker> drivers = [];
-    final value = data.value as Map;
-    for (final key in value.keys) {
-      //Map<dynamic, dynamic> map = value[key];
-      Marker driverMarker = Marker(
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        //infoWindow: InfoWindow(title: "YOU", snippet: initialPos.placeName),
-        position: LatLng(value[key]['location']['lat'], value[key]['location']['long']),
-        markerId: MarkerId(value[key]['driver_id']),
-      );
-      drivers.add(driverMarker);
-      print(value[key]['driver_id']);
-    }
-    drivers.forEach((Marker marker) {
-      setState(() {
-        markerSet.add(marker);
+      drivers.forEach((Marker marker) {
+        setState(() {
+          markerSet.add(marker);
+        });
       });
-    });*/
+    });
   }
 
   //
@@ -212,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 newGoogleMapController = controller;
 
                 locatePostion();
-
+                getDrivers();
                 setState(() {
                   bottomMapPadding = 270;
                 });
@@ -256,9 +249,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
             //
-            Center(
-              child: Text(temp),
-            ),
+
             Positioned(
               bottom: bottomMapPadding + 10,
               right: 10,
