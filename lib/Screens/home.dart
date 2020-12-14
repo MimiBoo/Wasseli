@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:diffutil_dart/diffutil.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -49,7 +50,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   DatabaseReference availableRef;
 
   bool drawerOpen = true;
-  String temp = '';
+
+  BitmapDescriptor customIcon;
+
+  bool firstTime = true;
 
   void restApp() {
     setState(() {
@@ -149,23 +153,72 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   //
   void getDrivers() {
     FirebaseDatabase.instance.reference().child('available').onValue.listen((event) {
+      markerSet.clear();
       var value = event.snapshot.value as Map;
+
       List<Marker> drivers = [];
       for (final key in value.keys) {
         Marker driverMarker = Marker(
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          //infoWindow: InfoWindow(title: "YOU", snippet: initialPos.placeName),
+          icon: customIcon,
           position: LatLng(value[key]['location']['lat'], value[key]['location']['long']),
           markerId: MarkerId(value[key]['driver_id']),
         );
         drivers.add(driverMarker);
-        print(value[key]);
       }
       drivers.forEach((Marker marker) {
         setState(() {
           markerSet.add(marker);
+          //firstTime = false;
         });
       });
+      /*
+      
+      if (firstTime) {
+        List<Marker> drivers = [];
+        for (final key in value.keys) {
+          Marker driverMarker = Marker(
+            icon: customIcon,
+            position: LatLng(value[key]['location']['lat'], value[key]['location']['long']),
+            markerId: MarkerId(value[key]['driver_id']),
+          );
+          drivers.add(driverMarker);
+        }
+        drivers.forEach((Marker marker) {
+          setState(() {
+            markerSet.add(marker);
+            firstTime = false;
+          });
+        });
+        print('clicked');
+      } else {
+        var tempList = [];
+        var oldList = [];
+        for (final key in value.keys) {
+          tempList.add(value[key]['driver_id']);
+        }
+
+        for (final item in markerSet) {
+          oldList.add(item.markerId.value);
+        }
+        print(oldList);
+        print(tempList);
+        var diffResult = calculateListDiff(tempList, oldList);
+        for (final update in diffResult.getUpdates()) {
+          update.when(
+            insert: (pos, count) => print("inserted $count on $pos"),
+          );
+        }
+        //print(diffResult.getUpdates());
+        
+        Function eq = const ListEquality().equals;
+        bool sameList = eq(tempList, oldList);
+        if (false == false && tempList.length == oldList.length) {
+          for (var i = 0; i < tempList.length; i++) {
+            oldList
+          }
+        } else {
+          return;
+        }*/
     });
   }
 
@@ -173,7 +226,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
+    BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(36, 36)),
+      'assets/images/car_android.png',
+    ).then((value) => customIcon = value);
     HelperMethods.getCurrentOnlineUserInfo();
     Provider.of<AppData>(context, listen: false).updateUserData();
   }
@@ -249,13 +305,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
             //
-
             Positioned(
               bottom: bottomMapPadding + 10,
               right: 10,
               child: GestureDetector(
                 onTap: () {
                   //locatePostion();
+
                   getDrivers();
                 },
                 child: Container(
