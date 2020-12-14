@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:diffutil_dart/diffutil.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -115,23 +114,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   );
   //
   void saveRideRequest() {
-    requestRef = FirebaseDatabase.instance.reference().child('rides').push();
+    requestRef = FirebaseDatabase.instance.reference().child('rides').child('waiting').push();
 
     var pickUp = Provider.of<AppData>(context, listen: false).pickUpLocation;
     var dropOff = Provider.of<AppData>(context, listen: false).dropOffLocation;
 
     Map pickUpLocMap = {
-      'lat': pickUp.latitude.toString(),
-      'long': pickUp.longitude.toString(),
+      'lat': pickUp.latitude,
+      'long': pickUp.longitude,
     };
 
     Map dropOffLocMap = {
-      'lat': dropOff.latitude.toString(),
-      'long': dropOff.longitude.toString(),
+      'lat': dropOff.latitude,
+      'long': dropOff.longitude,
     };
 
     Map rideInfo = {
-      'driver_id': 'waiting',
       'payment_method': 'cash',
       'pickup': pickUpLocMap,
       'dropoff': dropOffLocMap,
@@ -171,54 +169,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           //firstTime = false;
         });
       });
-      /*
-      
-      if (firstTime) {
-        List<Marker> drivers = [];
-        for (final key in value.keys) {
-          Marker driverMarker = Marker(
-            icon: customIcon,
-            position: LatLng(value[key]['location']['lat'], value[key]['location']['long']),
-            markerId: MarkerId(value[key]['driver_id']),
-          );
-          drivers.add(driverMarker);
-        }
-        drivers.forEach((Marker marker) {
-          setState(() {
-            markerSet.add(marker);
-            firstTime = false;
-          });
-        });
-        print('clicked');
-      } else {
-        var tempList = [];
-        var oldList = [];
-        for (final key in value.keys) {
-          tempList.add(value[key]['driver_id']);
-        }
-
-        for (final item in markerSet) {
-          oldList.add(item.markerId.value);
-        }
-        print(oldList);
-        print(tempList);
-        var diffResult = calculateListDiff(tempList, oldList);
-        for (final update in diffResult.getUpdates()) {
-          update.when(
-            insert: (pos, count) => print("inserted $count on $pos"),
-          );
-        }
-        //print(diffResult.getUpdates());
-        
-        Function eq = const ListEquality().equals;
-        bool sameList = eq(tempList, oldList);
-        if (false == false && tempList.length == oldList.length) {
-          for (var i = 0; i < tempList.length; i++) {
-            oldList
-          }
-        } else {
-          return;
-        }*/
     });
   }
 
