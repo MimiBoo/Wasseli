@@ -57,14 +57,20 @@ class HelperMethods {
   }
 
   static int calculateFares(DirectionDetails directionDetails) {
-    double timeTravelfare = (directionDetails.durationValue / 60) * 0.2;
-    double distanceTravelfare = (directionDetails.distanceValue / 1000) * 0.2;
+    var distence = directionDetails.durationValue;
+    if (distence <= 10000) {
+      return 500;
+    } else if (distence <= 20000 && distence >= 10000) {
+      return 1000;
+    } else {
+      double timeTravelfare = (directionDetails.durationValue / 60) * 0.2;
+      double distanceTravelfare = (directionDetails.distanceValue / 1000) * 0.2;
+      double totalPrice = timeTravelfare + distanceTravelfare;
 
-    double totalPrice = timeTravelfare + distanceTravelfare;
+      double totalLocal = totalPrice * 131.90;
 
-    double totalLocal = totalPrice * 129.24;
-
-    return totalLocal.truncate();
+      return totalLocal.truncate();
+    }
   }
 
   static void getCurrentOnlineUserInfo() {

@@ -128,9 +128,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       'lat': dropOff.latitude,
       'long': dropOff.longitude,
     };
-
+    var price = HelperMethods.calculateFares(tripDirectionDetails);
     Map rideInfo = {
       'payment_method': 'cash',
+      'distence': tripDirectionDetails.distanceText,
+      'duration': tripDirectionDetails.durationText,
+      'price': price,
       'pickup': pickUpLocMap,
       'dropoff': dropOffLocMap,
       'created_at': DateTime.now().toString(),
