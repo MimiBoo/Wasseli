@@ -36,6 +36,5 @@ class AppData extends ChangeNotifier {
         emailAddress = snap.value['email'];
       });
     }
-    notifyListeners();
   }
 }

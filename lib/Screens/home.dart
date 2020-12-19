@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,12 +11,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:wasseli/DataHandler/appData.dart';
+import 'package:wasseli/Helpers/geoFireHelper.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
 import 'package:wasseli/Models/directionDetails.dart';
 import 'package:wasseli/Screens/search.dart';
 import 'package:wasseli/Widgets/customDrawer.dart';
 import 'package:wasseli/Widgets/divder.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
+import 'package:wasseli/Models/nearbyDrivers.dart';
 import 'package:wasseli/config.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -49,10 +52,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   DatabaseReference availableRef;
 
   bool drawerOpen = true;
+  bool nearbyDriverKeysLoaded = false;
 
   BitmapDescriptor customIcon;
-
-  bool firstTime = true;
 
   void restApp() {
     setState(() {
@@ -105,6 +107,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     String address = await HelperMethods.searchCoordinateAddress(position, context);
     print('ADDRESS: $address');
+
+    initGeoFireLitener();
   }
 
   //
@@ -152,30 +156,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   //
-  void getDrivers() {
-    FirebaseDatabase.instance.reference().child('available').onValue.listen((event) {
-      markerSet.clear();
-      var value = event.snapshot.value as Map;
-
-      List<Marker> drivers = [];
-      for (final key in value.keys) {
-        Marker driverMarker = Marker(
-          icon: customIcon,
-          position: LatLng(value[key]['location']['lat'], value[key]['location']['long']),
-          markerId: MarkerId(value[key]['driver_id']),
-        );
-        drivers.add(driverMarker);
-      }
-      drivers.forEach((Marker marker) {
-        setState(() {
-          markerSet.add(marker);
-          //firstTime = false;
-        });
-      });
-    });
-  }
-
-  //
   @override
   void initState() {
     super.initState();
@@ -214,7 +194,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 newGoogleMapController = controller;
 
                 locatePostion();
-                getDrivers();
                 setState(() {
                   bottomMapPadding = 270;
                 });
@@ -263,9 +242,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               right: 10,
               child: GestureDetector(
                 onTap: () {
-                  //locatePostion();
-
-                  getDrivers();
+                  locatePostion();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -714,6 +691,73 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       markerSet.add(dropOffMarker);
       circleSet.add(pickUpCircle);
       circleSet.add(dropOffCircle);
+    });
+  }
+
+  void initGeoFireLitener() {
+    Geofire.initialize('availableDrivers');
+    //
+
+    Geofire.queryAtLocation(currentPostion.latitude, currentPostion.longitude, 1).listen((map) {
+      print(map);
+      if (map != null) {
+        var callBack = map['callBack'];
+        switch (callBack) {
+          case Geofire.onKeyEntered:
+            NearbyDrivers nearbyDrivers = NearbyDrivers();
+            nearbyDrivers.key = map['key'];
+            nearbyDrivers.latitude = map['latitude'];
+            nearbyDrivers.longitude = map['longitude'];
+            GeoFireHelper.nearbyDriversList.add(nearbyDrivers);
+            if (nearbyDriverKeysLoaded) {
+              updateDriversOnMap();
+            }
+            break;
+
+          case Geofire.onKeyExited:
+            GeoFireHelper.removeDriverFromList(map['key']);
+            updateDriversOnMap();
+            break;
+
+          case Geofire.onKeyMoved:
+            NearbyDrivers nearbyDrivers = NearbyDrivers();
+            nearbyDrivers.key = map['key'];
+            nearbyDrivers.latitude = map['latitude'];
+            nearbyDrivers.longitude = map['longitude'];
+            GeoFireHelper.updateDriverNearbyLocation(nearbyDrivers);
+            updateDriversOnMap();
+            break;
+
+          case Geofire.onGeoQueryReady:
+            updateDriversOnMap();
+            break;
+        }
+      }
+
+      setState(() {});
+    });
+    //
+  }
+
+  void updateDriversOnMap() {
+    setState(() {
+      markerSet.clear();
+    });
+    Set<Marker> tMarkers = Set<Marker>();
+    for (NearbyDrivers driver in GeoFireHelper.nearbyDriversList) {
+      print(driver.key);
+      LatLng driverPosition = LatLng(driver.latitude, driver.longitude);
+      Marker marker = Marker(
+        markerId: MarkerId("driver${driver.key}"),
+        position: driverPosition,
+        icon: customIcon,
+        //rotation: HelperMethods.createRandomNumber(360),
+      );
+
+      tMarkers.add(marker);
+    }
+    setState(() {
+      markerSet = tMarkers;
     });
   }
 }
