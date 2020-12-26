@@ -8,12 +8,14 @@ import 'package:provider/provider.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Screens/login.dart';
+import 'package:wasseli/config.dart';
 import 'package:wasseli/localization/localization.dart';
 import 'package:wasseli/routes/custom_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  currentFirebaseUser = FirebaseAuth.instance.currentUser;
   runApp(ChangeNotifierProvider(
     create: (context) => AppData(),
     child: MyApp(),

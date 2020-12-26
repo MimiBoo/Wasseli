@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wasseli/Screens/login.dart';
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
+import 'package:wasseli/config.dart';
 import 'package:wasseli/main.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -177,9 +178,10 @@ class RegisterScreen extends StatelessWidget {
       };
 
       userRef.child(user.uid).set(userDataMap);
-      displayToatMessage('User has been created', context);
+      currentFirebaseUser = user;
+      displayToatMessage('${currentFirebaseUser.uid}', context);
 
-      Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
+      Navigator.pushNamed(context, HomeScreen.idScreen);
     } else {
       //Error occured
       Navigator.pop(context);

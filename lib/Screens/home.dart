@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   );
   //
   void saveRideRequest() {
-    requestRef = FirebaseDatabase.instance.reference().child('rides').child('waiting').push();
+    requestRef = FirebaseDatabase.instance.reference().child('rides').push();
 
     var pickUp = Provider.of<AppData>(context, listen: false).pickUpLocation;
     var dropOff = Provider.of<AppData>(context, listen: false).dropOffLocation;
@@ -135,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     var price = HelperMethods.calculateFares(tripDirectionDetails);
     Map rideInfo = {
       'payment_method': 'cash',
+      'driver_id': 'waiting',
       'distence': tripDirectionDetails.distanceText,
       'duration': tripDirectionDetails.durationText,
       'price': price,
@@ -745,7 +746,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
     Set<Marker> tMarkers = Set<Marker>();
     for (NearbyDrivers driver in GeoFireHelper.nearbyDriversList) {
-      print(driver.key);
       LatLng driverPosition = LatLng(driver.latitude, driver.longitude);
       Marker marker = Marker(
         markerId: MarkerId("driver${driver.key}"),

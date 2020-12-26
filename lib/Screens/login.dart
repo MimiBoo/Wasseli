@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Screens/register.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
+import 'package:wasseli/config.dart';
 import 'package:wasseli/localization/language.dart';
 import 'package:wasseli/localization/localization.dart';
 import 'package:wasseli/main.dart';
@@ -176,9 +178,17 @@ class LoginScreen extends StatelessWidget {
         .user;
 
     if (user != null) {
-      //save user info to database
-      Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
-      displayToatMessage('Logged In', context);
+      userRef.child(user.uid).once().then((DataSnapshot snap) {
+        if (snap.value != null) {
+          currentFirebaseUser = user;
+          Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
+          displayToatMessage('Logged In', context);
+        } else {
+          Navigator.pop(context);
+          _firebaseAuth.signOut();
+          displayToatMessage('No record exists for this user, Please create new account', context);
+        }
+      });
     } else {
       //Error occured
       Navigator.pop(context);

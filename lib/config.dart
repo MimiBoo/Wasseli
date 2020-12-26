@@ -7,5 +7,6 @@ String placesKey = 'AIzaSyAMPo9zdAm8KQZmRgg8oR_ay916IqlQ3Do';
 String directionKey = 'AIzaSyBuF1e3s6bb1C_ASxLM6vuMmR5_-wR6AWE';
 
 User firebaseUser;
+User currentFirebaseUser;
 
 Users currentUser;
