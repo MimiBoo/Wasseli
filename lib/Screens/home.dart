@@ -14,9 +14,11 @@ import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/geoFireHelper.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
 import 'package:wasseli/Models/directionDetails.dart';
+import 'package:wasseli/Screens/register.dart';
 import 'package:wasseli/Screens/search.dart';
 import 'package:wasseli/Widgets/customDrawer.dart';
 import 'package:wasseli/Widgets/divder.dart';
+import 'package:wasseli/Widgets/noDriversDialog.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
 import 'package:wasseli/Models/nearbyDrivers.dart';
 import 'package:wasseli/config.dart';
@@ -55,6 +57,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool nearbyDriverKeysLoaded = false;
 
   BitmapDescriptor customIcon;
+
+  List<NearbyDrivers> availableDrivers;
 
   void restApp() {
     setState(() {
@@ -482,6 +486,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           child: RaisedButton(
                             onPressed: () {
                               displayRideRequestContainer();
+                              availableDrivers = GeoFireHelper.nearbyDriversList;
+                              searchNearestDriver();
                             },
                             color: Theme.of(context).accentColor,
                             child: Padding(
@@ -759,5 +765,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     setState(() {
       markerSet = tMarkers;
     });
+  }
+
+  void noDriverFound() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) => NoDriverDialog(),
+    );
+  }
+
+  void searchNearestDriver() {
+    if (availableDrivers.length == 0) {
+      cancelRideRequest();
+      restApp();
+      noDriverFound();
+      //displayToatMessage('No available drivers nearby', context);
+      return;
+    }
+    var driver = availableDrivers.first;
+    availableDrivers.removeAt(0);
   }
 }
