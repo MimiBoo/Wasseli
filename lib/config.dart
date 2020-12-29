@@ -11,3 +11,10 @@ User firebaseUser;
 User currentFirebaseUser;
 
 Users currentUser;
+
+int driverRequestTimeout = 60;
+String rideStatus = '';
+String driverStatus = 'Driver is coming';
+String carDetails = '';
+String driverName = '';
+String driverPhone = '';

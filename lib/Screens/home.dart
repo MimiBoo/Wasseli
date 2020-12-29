@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   double searcHeight = 270;
   double requestHeight = 0;
   double bottomMapPadding = 0;
+  double driverDetailsHeight = 0;
 
   DirectionDetails tripDirectionDetails;
 
@@ -60,12 +61,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   List<NearbyDrivers> availableDrivers;
 
+  String state = "normal";
+
+  StreamSubscription<Event> rideStreamSubscription;
+
   void restApp() {
     setState(() {
       drawerOpen = true;
       searcHeight = 270;
       rideDetailsHeight = 0;
       requestHeight = 0;
+      driverDetailsHeight = 0;
       bottomMapPadding = 270;
 
       polyLinesSet.clear();
@@ -100,6 +106,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+  //
+  void displayDriverDetailsContainer(){
+    setState(() {
+      searcHeight = 0;
+      rideDetailsHeight = 0;
+      bottomMapPadding = 290;
+      driverDetailsHeight = 290;
+      drawerOpen = false;
+    });
+  }
   //
   void locatePostion() async {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -153,11 +169,42 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     };
 
     requestRef.set(rideInfo);
+
+    rideStreamSubscription = requestRef.onValue.listen((event) {
+      if(event.snapshot.value == null){
+        return;
+      }
+      if(event.snapshot.value['car_details']!= null){
+        setState(() {
+          carDetails = event.snapshot.value['car_details'].toString();
+        });
+      }
+      if(event.snapshot.value['driver_name']!= null){
+        setState(() {
+          driverName = event.snapshot.value['driver_name'].toString();
+        });
+      }
+      if(event.snapshot.value['driver_phone']!= null){
+        setState(() {
+          driverPhone = event.snapshot.value['driver_phone'].toString();
+        });
+      }
+      if(event.snapshot.value['status']!= null){
+        rideStatus = event.snapshot.value['status'];
+      }
+      if(rideStatus == 'accepted'){
+        displayDriverDetailsContainer();
+      }
+
+    });
   }
 
   //
   void cancelRideRequest() {
     requestRef.remove();
+    setState(() {
+      state = 'normal';
+    });
   }
 
   //
@@ -274,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            //Search bottom
+            //Search panel
             Positioned(
               left: 0,
               right: 0,
@@ -394,7 +441,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            //
+            //Order panel
             Positioned(
               bottom: 0,
               left: 0,
@@ -485,6 +532,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: RaisedButton(
                             onPressed: () {
+                              setState(() {
+                                state = 'requesting';
+                              });
                               displayRideRequestContainer();
                               availableDrivers = GeoFireHelper.nearbyDriversList;
                               searchNearestDriver();
@@ -519,7 +569,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            //
+            //Waiting panel
             Positioned(
               bottom: 0,
               left: 0,
@@ -590,6 +640,107 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
+              ),
+            ),
+            //Driver info panel
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: driverDetailsHeight,
+                decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 16,
+                    spreadRadius: 0.5,
+                    offset: Offset(0.7, 0.7),
+                  ),
+                ],
+              ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                  child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(driverStatus, textAlign: TextAlign.center,style: TextStyle(fontSize: 20, fontFamily: 'Brand-Bold'),),
+                    ],
+                    ),
+                    SizedBox(height: 20),
+                    Divider(height: 2,thickness: 2,),
+                    Text(carDetails,style: TextStyle(color: Colors.grey),),
+                    Text(driverName,style: TextStyle(fontSize: 20),),
+                    SizedBox(height: 22),
+                    Divider(height: 2,thickness: 2,),
+                    SizedBox(height: 22),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        //call
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 55,
+                              width: 55,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(26)),
+                                border: Border.all(width: 2, color: Colors.grey),
+                              ),
+                              child: Icon(Icons.call, size: 30,),
+                            ),
+                            SizedBox(height: 10),
+                            Text('Call'),
+                          ],
+                        ),
+                        //details
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 55,
+                              width: 55,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(26)),
+                                border: Border.all(width: 2, color: Colors.grey),
+                              ),
+                              child: Icon(Icons.list, size: 30,),
+                            ),
+                            SizedBox(height: 10),
+                            Text('Details'),
+                          ],
+                        ),
+                        //cancel
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 55,
+                              width: 55,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(26)),
+                                border: Border.all(width: 2, color: Colors.grey),
+                              ),
+                              child: Icon(Icons.close, size: 30,),
+                            ),
+                            SizedBox(height: 10),
+                            Text('Canel'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),),
               ),
             ),
           ],
@@ -706,7 +857,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     //
 
     Geofire.queryAtLocation(currentPostion.latitude, currentPostion.longitude, 1).listen((map) {
-      print('MAP1: $map');
+
       if (map != null) {
         var callBack = map['callBack'];
         switch (callBack) {
@@ -719,13 +870,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             if (nearbyDriverKeysLoaded) {
               updateDriversOnMap();
             }
-            print('MAP2: $map');
+
             break;
 
           case Geofire.onKeyExited:
             GeoFireHelper.removeDriverFromList(map['key']);
             updateDriversOnMap();
-            print('MAP3: ${map['key']}');
+
             break;
 
           case Geofire.onKeyMoved:
@@ -797,7 +948,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         String token = snapshot.value.toString();
         print(token);
         HelperMethods.sendNotificationToDriver(token, context, requestRef.key);
+      }else{
+        return;
       }
+      const oneSecondPassed = Duration(seconds: 1);
+      var timer= Timer.periodic(oneSecondPassed, (timer) {
+        if(state != 'requesting'){
+          driverRef.child(driver.key).child('newRide').set('cancelled');
+          driverRef.child(driver.key).child('newRide').onDisconnect();
+          driverRequestTimeout = 60;
+          timer.cancel();
+        }
+
+        driverRequestTimeout -= 1;
+        driverRef.child(driver.key).child('newRide').onValue.listen((event) {
+          if(event.snapshot.value.toString() == 'accepted'){
+            driverRef.child(driver.key).child('newRide').onDisconnect();
+            driverRequestTimeout = 60;
+            timer.cancel();
+          }
+        });
+
+
+        if(driverRequestTimeout == 0){
+          driverRef.child(driver.key).child('newRide').set('timeout');
+          driverRef.child(driver.key).child('newRide').onDisconnect();
+          driverRequestTimeout = 60;
+          timer.cancel();
+          searchNearestDriver();
+        }
+      });
     });
   }
 }
