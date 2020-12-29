@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:math';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+//
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+//
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/requestHelper.dart';
 import 'package:wasseli/Models/address.dart';
@@ -94,5 +97,33 @@ class HelperMethods {
     int randNumber = random.nextInt(number);
 
     return randNumber.toDouble();
+  }
+
+  static sendNotificationToDriver(String token, BuildContext context, String rideRequestId) async {
+    var destination = Provider.of<AppData>(context, listen: false).dropOffLocation;
+
+    var res = await http.post(
+      'https://fcm.googleapis.com/fcm/send',
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': serverKey,
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': {
+            'body': 'DropOff Address, ${destination.placeName}',
+            'title': 'New Ride request',
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'id': '1',
+            'status': 'done',
+            'ride_request_id': rideRequestId,
+          },
+          'to': token,
+        },
+      ),
+    );
   }
 }

@@ -14,7 +14,6 @@ import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/geoFireHelper.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
 import 'package:wasseli/Models/directionDetails.dart';
-import 'package:wasseli/Screens/register.dart';
 import 'package:wasseli/Screens/search.dart';
 import 'package:wasseli/Widgets/customDrawer.dart';
 import 'package:wasseli/Widgets/divder.dart';
@@ -22,6 +21,7 @@ import 'package:wasseli/Widgets/noDriversDialog.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
 import 'package:wasseli/Models/nearbyDrivers.dart';
 import 'package:wasseli/config.dart';
+import 'package:wasseli/main.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String idScreen = 'home';
@@ -195,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               circles: circleSet,
               initialCameraPosition: _ouargla,
               onMapCreated: (GoogleMapController controller) {
-                _googleMapController.complete(controller);
+                if (_googleMapController == null) _googleMapController.complete(controller);
                 newGoogleMapController = controller;
 
                 locatePostion();
@@ -706,7 +706,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     //
 
     Geofire.queryAtLocation(currentPostion.latitude, currentPostion.longitude, 1).listen((map) {
-      print(map);
+      print('MAP1: $map');
       if (map != null) {
         var callBack = map['callBack'];
         switch (callBack) {
@@ -719,11 +719,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             if (nearbyDriverKeysLoaded) {
               updateDriversOnMap();
             }
+            print('MAP2: $map');
             break;
 
           case Geofire.onKeyExited:
             GeoFireHelper.removeDriverFromList(map['key']);
             updateDriversOnMap();
+            print('MAP3: ${map['key']}');
             break;
 
           case Geofire.onKeyMoved:
@@ -733,6 +735,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             nearbyDrivers.longitude = map['longitude'];
             GeoFireHelper.updateDriverNearbyLocation(nearbyDrivers);
             updateDriversOnMap();
+            print('MAP: $map');
             break;
 
           case Geofire.onGeoQueryReady:
@@ -754,10 +757,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     for (NearbyDrivers driver in GeoFireHelper.nearbyDriversList) {
       LatLng driverPosition = LatLng(driver.latitude, driver.longitude);
       Marker marker = Marker(
-        markerId: MarkerId("driver${driver.key}"),
+        markerId: MarkerId("${driver.key}"),
         position: driverPosition,
         icon: customIcon,
-        //rotation: HelperMethods.createRandomNumber(360),
       );
 
       tMarkers.add(marker);
@@ -784,6 +786,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       return;
     }
     var driver = availableDrivers.first;
+    notifyDriver(driver);
     availableDrivers.removeAt(0);
+  }
+
+  void notifyDriver(NearbyDrivers driver) {
+    driverRef.child(driver.key).child('newRide').set(requestRef.key);
+    driverRef.child(driver.key).child('token').once().then((DataSnapshot snapshot) {
+      if (snapshot.value != null) {
+        String token = snapshot.value.toString();
+        print(token);
+        HelperMethods.sendNotificationToDriver(token, context, requestRef.key);
+      }
+    });
   }
 }
