@@ -9,12 +9,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/geoFireHelper.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
 import 'package:wasseli/Models/directionDetails.dart';
 import 'package:wasseli/Screens/search.dart';
+import 'package:wasseli/Widgets/collectEarningDialog.dart';
 import 'package:wasseli/Widgets/customDrawer.dart';
 import 'package:wasseli/Widgets/divder.dart';
 import 'package:wasseli/Widgets/noDriversDialog.dart';
@@ -80,6 +82,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       markerSet.clear();
       circleSet.clear();
       pLineCoordinates.clear();
+
+      rideStatus = '';
+      driverName = '';
+      driverPhone = '';
+      carDetails = '';
+      driverStatus = 'Driver is coming';
     });
 
     locatePostion();
@@ -173,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     requestRef.set(rideInfo);
 
-    rideStreamSubscription = requestRef.onValue.listen((event) {
+    rideStreamSubscription = requestRef.onValue.listen((event) async {
       if (event.snapshot.value == null) {
         return;
       }
@@ -213,6 +221,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         displayDriverDetailsContainer();
         Geofire.stopListener();
         deleteGeoFireMarkers();
+      }
+      if (rideStatus == 'ended') {
+        if (event.snapshot.value['price'] != null) {
+          int price = event.snapshot.value['price'];
+          var res = await showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) => CollectEarningDialog(price: price),
+          );
+          if (res == 'close') {
+            requestRef.onDisconnect();
+            requestRef = null;
+            rideStreamSubscription.cancel();
+            rideStreamSubscription = null;
+            restApp();
+          }
+        }
       }
     });
   }
@@ -762,24 +787,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           //call
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 55,
-                                width: 55,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(26)),
-                                  border: Border.all(width: 2, color: Colors.grey),
-                                ),
-                                child: Icon(
-                                  Icons.call,
-                                  size: 30,
-                                ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: GestureDetector(
+                              onTap: () {
+                                launch('tel://$driverPhone');
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 55,
+                                    width: 55,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(26)),
+                                      border: Border.all(width: 2, color: Colors.grey),
+                                    ),
+                                    child: Icon(
+                                      Icons.call,
+                                      size: 30,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text('Call'),
+                                ],
                               ),
-                              SizedBox(height: 10),
-                              Text('Call'),
-                            ],
+                            ),
                           ),
                           //details
                           Column(
