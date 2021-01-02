@@ -24,6 +24,7 @@ import 'package:wasseli/Widgets/progressDialog.dart';
 import 'package:wasseli/Models/nearbyDrivers.dart';
 import 'package:wasseli/config.dart';
 import 'package:wasseli/main.dart';
+import 'package:wasseli/Screens/rating.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String idScreen = 'home';
@@ -230,7 +231,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             barrierDismissible: false,
             builder: (BuildContext context) => CollectEarningDialog(price: price),
           );
+          String driverId = '';
           if (res == 'close') {
+            if (event.snapshot.value['driver_id'] != null) {
+              driverId = event.snapshot.value['driver_id'];
+            }
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => RatingScreen(driverId: driverId)));
             requestRef.onDisconnect();
             requestRef = null;
             rideStreamSubscription.cancel();
@@ -835,24 +841,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ],
                           ),
                           //cancel
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 55,
-                                width: 55,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(26)),
-                                  border: Border.all(width: 2, color: Colors.grey),
-                                ),
-                                child: Icon(
-                                  Icons.close,
-                                  size: 30,
-                                ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: GestureDetector(
+                              onTap: () {
+                                cancelRideRequest();
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 55,
+                                    width: 55,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(26)),
+                                      border: Border.all(width: 2, color: Colors.grey),
+                                    ),
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 30,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text('Cancel'),
+                                ],
                               ),
-                              SizedBox(height: 10),
-                              Text('Cancel'),
-                            ],
+                            ),
                           ),
                         ],
                       ),

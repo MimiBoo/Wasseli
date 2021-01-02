@@ -18,3 +18,6 @@ String driverStatus = 'Driver is coming';
 String carDetails = '';
 String driverName = '';
 String driverPhone = '';
+
+double starCounter = 0;
+String title = '';

@@ -1,9 +1,0 @@
-{
-    "editor.rulers": [],
-    "[git-commit]": {
-        "editor.rulers": [],
-        "workbench.editor.restoreViewState": false
-    },
-    "editor.wordWrapColumn": 700,
-    "editor.defaultFormatter": "Dart-Code.flutter"
-}
