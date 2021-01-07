@@ -61,10 +61,7 @@ class CustomDrawer extends StatelessWidget {
               leading: Icon(Icons.history),
               title: Text('Delivery History', style: TextStyle(fontSize: 15)),
             ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Visit Profile', style: TextStyle(fontSize: 15)),
-            ),
+
             GestureDetector(
               onTap: () {
                 showDialog(
@@ -79,9 +76,14 @@ class CustomDrawer extends StatelessWidget {
                 title: Text('About', style: TextStyle(fontSize: 15)),
               ),
             ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings', style: TextStyle(fontSize: 15)),
+            ),
             Expanded(
               child: Container(),
             ),
+
             GestureDetector(
               onTap: () {
                 FirebaseAuth.instance.signOut();

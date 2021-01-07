@@ -4,9 +4,9 @@ import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:wasseli/config.dart';
 
 class RatingScreen extends StatefulWidget {
-  final String driverId;
+  final String driverId, rideId;
 
-  const RatingScreen({this.driverId});
+  const RatingScreen({this.driverId, this.rideId});
 
   @override
   _RatingScreenState createState() => _RatingScreenState();
@@ -93,6 +93,7 @@ class _RatingScreenState extends State<RatingScreen> {
                       child: GestureDetector(
                         onTap: () {
                           DatabaseReference driverRatingRef = FirebaseDatabase.instance.reference().child('drivers').child(widget.driverId).child('ratings');
+                          DatabaseReference requestRef = FirebaseDatabase.instance.reference().child('rides').child(widget.rideId).child('rating');
                           driverRatingRef.once().then((DataSnapshot snap) {
                             if (snap.value != null) {
                               double oldRating = snap.value;
@@ -102,6 +103,7 @@ class _RatingScreenState extends State<RatingScreen> {
                               driverRatingRef.set(starCounter);
                             }
                           });
+                          requestRef.set(starCounter);
                           Navigator.pop(context);
                         },
                         child: Container(

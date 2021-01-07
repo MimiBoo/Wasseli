@@ -108,7 +108,7 @@ class LoginScreen extends StatelessWidget {
                           'Email address not valid',
                           context,
                         );
-                      } else if (passwordCtrl.text.length < 7) {
+                      } else if (passwordCtrl.text.length <= 6) {
                         displayToatMessage(
                           'Password must be at least 6 characters long',
                           context,
@@ -184,8 +184,8 @@ class LoginScreen extends StatelessWidget {
           Navigator.pushNamedAndRemoveUntil(context, HomeScreen.idScreen, (route) => false);
           displayToatMessage('Logged In', context);
         } else {
-          Navigator.pop(context);
           _firebaseAuth.signOut();
+          Navigator.pop(context);
           displayToatMessage('No record exists for this user, Please create new account', context);
         }
       });

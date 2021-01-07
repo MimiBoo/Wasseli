@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -174,6 +176,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       'pickup': pickUpLocMap,
       'dropoff': dropOffLocMap,
       'created_at': DateTime.now().toString(),
+      'rider_id': FirebaseAuth.instance.currentUser.uid,
       'rider_name': currentUser.name,
       'rider_phone': currentUser.phone,
       'pickup_address': pickUp.placeName,
@@ -236,7 +239,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             if (event.snapshot.value['driver_id'] != null) {
               driverId = event.snapshot.value['driver_id'];
             }
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => RatingScreen(driverId: driverId)));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => RatingScreen(
+                  driverId: driverId,
+                  rideId: event.snapshot.key,
+                ),
+              ),
+            );
             requestRef.onDisconnect();
             requestRef = null;
             rideStreamSubscription.cancel();

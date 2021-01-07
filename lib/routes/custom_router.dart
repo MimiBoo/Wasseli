@@ -20,7 +20,6 @@ class CustomRouter {
       case ProfilePage.idScreen:
         return MaterialPageRoute(builder: (BuildContext context) => ProfilePage());
     }
-
     return MaterialPageRoute(builder: (BuildContext context) => LoginScreen());
   }
 }
