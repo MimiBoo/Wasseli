@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Screens/login.dart';
 import 'package:wasseli/Screens/profile.dart';
+import 'package:wasseli/Screens/settings.dart';
 import 'package:wasseli/Widgets/about.dart';
 import 'package:wasseli/Widgets/divder.dart';
+import 'package:wasseli/localization/localization.dart';
 
 class CustomDrawer extends StatelessWidget {
   final AppData appData;
@@ -12,6 +14,7 @@ class CustomDrawer extends StatelessWidget {
   const CustomDrawer(this.appData);
   @override
   Widget build(BuildContext context) {
+    var lang = DemoLocalization.of(context);
     return Container(
       color: Colors.white,
       width: 255,
@@ -59,7 +62,7 @@ class CustomDrawer extends StatelessWidget {
 
             ListTile(
               leading: Icon(Icons.history),
-              title: Text('Delivery History', style: TextStyle(fontSize: 15)),
+              title: Text(lang.getTranslatedValue('delivery_history'), style: TextStyle(fontSize: 15)),
             ),
 
             GestureDetector(
@@ -73,12 +76,17 @@ class CustomDrawer extends StatelessWidget {
               },
               child: ListTile(
                 leading: Icon(Icons.info),
-                title: Text('About', style: TextStyle(fontSize: 15)),
+                title: Text(lang.getTranslatedValue('about'), style: TextStyle(fontSize: 15)),
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings', style: TextStyle(fontSize: 15)),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, SettingScreen.idScreen);
+              },
+              child: ListTile(
+                leading: Icon(Icons.settings),
+                title: Text(lang.getTranslatedValue('settings_title'), style: TextStyle(fontSize: 15)),
+              ),
             ),
             Expanded(
               child: Container(),
@@ -91,7 +99,7 @@ class CustomDrawer extends StatelessWidget {
               },
               child: ListTile(
                 leading: Icon(Icons.logout),
-                title: Text('Sign Out', style: TextStyle(fontSize: 15)),
+                title: Text(lang.getTranslatedValue('logout'), style: TextStyle(fontSize: 15)),
               ),
             ),
             Text('V0.1.0 Beta', style: TextStyle(fontSize: 15)),

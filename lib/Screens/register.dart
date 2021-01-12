@@ -7,6 +7,8 @@ import 'package:wasseli/Screens/login.dart';
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
 import 'package:wasseli/config.dart';
+import 'package:wasseli/localization/language.dart';
+import 'package:wasseli/localization/localization.dart';
 import 'package:wasseli/main.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -18,14 +20,69 @@ class RegisterScreen extends StatelessWidget {
   TextEditingController passwordCtrl = TextEditingController();
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  _changeLanguage(BuildContext context, Language language) {
+    Locale _temp;
+    switch (language.languageCode) {
+      case 'en':
+        _temp = Locale(language.languageCode, 'US');
+        break;
+      case 'ar':
+        _temp = Locale(language.languageCode, 'DZ');
+        break;
+      default:
+        _temp = Locale(language.languageCode, 'DZ');
+    }
+
+    MyApp.setLocale(context, _temp);
+  }
+
   @override
   Widget build(BuildContext context) {
+    var lang = DemoLocalization.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          lang.getTranslatedValue('register_title'),
+          style: TextStyle(fontSize: 24, fontFamily: 'Brand-Bold', color: Colors.black),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10, left: 10),
+            child: DropdownButton(
+              underline: SizedBox(width: 0),
+              icon: Icon(
+                Icons.language,
+                color: Colors.black,
+              ),
+              items: Language.languageList()
+                  .map<DropdownMenuItem<Language>>(
+                    (lang) => DropdownMenuItem<Language>(
+                      value: lang,
+                      child: Row(
+                        children: [
+                          Text(lang.flag),
+                          Text(lang.name),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (Language language) {
+                _changeLanguage(context, language);
+              },
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 45),
+            SizedBox(height: 20),
             Image(
               image: AssetImage('assets/images/logo.png'),
               height: 250,
@@ -33,11 +90,6 @@ class RegisterScreen extends StatelessWidget {
               alignment: Alignment.center,
             ),
             SizedBox(height: 1),
-            Text(
-              'Register',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24, fontFamily: 'Brand-Bold'),
-            ),
             Padding(
               padding: EdgeInsets.all(20),
               child: Column(
@@ -47,7 +99,7 @@ class RegisterScreen extends StatelessWidget {
                     controller: nameCtrl,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
-                      hintText: 'Full Name',
+                      hintText: lang.getTranslatedValue('register_full_name'),
                       hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
@@ -58,7 +110,7 @@ class RegisterScreen extends StatelessWidget {
                     controller: emailCtrl,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      hintText: 'Email',
+                      hintText: lang.getTranslatedValue('register_email'),
                       hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
@@ -69,7 +121,7 @@ class RegisterScreen extends StatelessWidget {
                     controller: phoneCtrl,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                      hintText: 'Phone number',
+                      hintText: lang.getTranslatedValue('register_phone'),
                       hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
@@ -81,7 +133,7 @@ class RegisterScreen extends StatelessWidget {
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: 'Password',
+                      hintText: lang.getTranslatedValue('register_password'),
                       hintStyle: TextStyle(fontSize: 20, color: Colors.grey),
                       labelStyle: TextStyle(fontSize: 14),
                     ),
@@ -95,7 +147,7 @@ class RegisterScreen extends StatelessWidget {
                       height: 50,
                       child: Center(
                         child: Text(
-                          'Register',
+                          lang.getTranslatedValue('register_button'),
                           style: TextStyle(
                             fontFamily: 'Brand-Bold',
                             fontSize: 18,
@@ -139,7 +191,7 @@ class RegisterScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(context, LoginScreen.idScreen, (route) => false);
               },
-              child: Text('Already have an account? Login here'),
+              child: Text(lang.getTranslatedValue('have_account_login')),
             ),
           ],
         ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:wasseli/localization/localization.dart';
 
 class NoDriverDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var lang = DemoLocalization.of(context);
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 0,
@@ -20,11 +22,11 @@ class NoDriverDialog extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 10),
-                Text('No Drivers found', style: TextStyle(fontSize: 22, fontFamily: 'Brand-Bold')),
+                Text(lang.getTranslatedValue('no_driver_found'), style: TextStyle(fontSize: 22, fontFamily: 'Brand-Bold')),
                 SizedBox(height: 25),
                 Padding(
                   padding: EdgeInsets.all(8),
-                  child: Text('No available driver nearby was found, Please try again later. '),
+                  child: Text(lang.getTranslatedValue('no_driver_found_content')),
                 ),
                 SizedBox(height: 30),
                 Column(
@@ -51,7 +53,7 @@ class NoDriverDialog extends StatelessWidget {
                     Container(
                       width: double.infinity,
                       child: Text(
-                        'Close',
+                        lang.getTranslatedValue('close_button'),
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 14.0, fontFamily: "Brand-Regular"),
                       ),

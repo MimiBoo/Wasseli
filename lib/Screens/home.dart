@@ -25,6 +25,7 @@ import 'package:wasseli/Widgets/noDriversDialog.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
 import 'package:wasseli/Models/nearbyDrivers.dart';
 import 'package:wasseli/config.dart';
+import 'package:wasseli/localization/localization.dart';
 import 'package:wasseli/main.dart';
 import 'package:wasseli/Screens/rating.dart';
 
@@ -113,8 +114,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     setState(() {
       searcHeight = 0;
-      rideDetailsHeight = 230;
-      bottomMapPadding = 230;
+      rideDetailsHeight = 240;
+      bottomMapPadding = 240;
       drawerOpen = false;
     });
   }
@@ -322,6 +323,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   //
   @override
   Widget build(BuildContext context) {
+    var lang = DemoLocalization.of(context);
+    Locale myLocale = Localizations.localeOf(context);
     var appData = Provider.of<AppData>(context, listen: false);
     return SafeArea(
       child: Scaffold(
@@ -354,7 +357,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             //HamburgerButton for Drawer
             Positioned(
               top: 10,
-              left: 10,
+              left: myLocale.languageCode == 'en' ? 10 : null,
+              right: myLocale.languageCode == 'ar' ? 10 : null,
               child: GestureDetector(
                 onTap: () {
                   if (drawerOpen) {
@@ -391,7 +395,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             //
             Positioned(
               bottom: bottomMapPadding + 10,
-              right: 10,
+              left: myLocale.languageCode == 'en' ? null : 10,
+              right: myLocale.languageCode == 'ar' ? null : 10,
               child: GestureDetector(
                 onTap: () {
                   locatePostion();
@@ -448,17 +453,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 6),
                         Text(
-                          'Hi there,',
+                          lang.getTranslatedValue('greating'),
                           style: TextStyle(fontSize: 12),
                         ),
                         Text(
-                          'Where to?',
+                          lang.getTranslatedValue('where_to'),
                           style: TextStyle(fontSize: 20, fontFamily: 'Brand-Bold'),
                         ),
                         SizedBox(height: 20),
@@ -489,7 +494,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 children: [
                                   Icon(Icons.search, color: Colors.black),
                                   SizedBox(width: 10),
-                                  Text('Search Drop Off'),
+                                  Text(lang.getTranslatedValue('search')),
                                 ],
                               ),
                             ),
@@ -504,11 +509,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  Provider.of<AppData>(context).pickUpLocation != null ? Provider.of<AppData>(context).pickUpLocation.placeName : "Add Home",
+                                  Provider.of<AppData>(context).pickUpLocation != null ? Provider.of<AppData>(context).pickUpLocation.placeName : lang.getTranslatedValue('add_home'),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
-                                  'Your living home address',
+                                  lang.getTranslatedValue('home_address'),
                                   style: TextStyle(color: Colors.grey, fontSize: 12),
                                 ),
                               ],
@@ -525,10 +530,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Add Work'),
+                                Text(lang.getTranslatedValue('add_work')),
                                 SizedBox(height: 4),
                                 Text(
-                                  'Your office address',
+                                  lang.getTranslatedValue('work_address'),
                                   style: TextStyle(color: Colors.grey, fontSize: 12),
                                 ),
                               ],
@@ -580,13 +585,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ),
                             child: Row(
                               children: [
-                                Image.asset('assets/images/taxi.png', height: 70, width: 80),
+                                Image.asset('assets/images/truck.png', height: 70, width: 80),
                                 SizedBox(height: 16),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Car',
+                                      lang.getTranslatedValue('mini_truck'),
                                       style: TextStyle(fontSize: 18, fontFamily: 'Brand-Bold'),
                                     ),
                                     Text(
@@ -599,7 +604,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   child: Container(),
                                 ),
                                 Text(
-                                  ((tripDirectionDetails != null) ? '${HelperMethods.calculateFares(tripDirectionDetails)} DA' : ''),
+                                  ((tripDirectionDetails != null) ? '${HelperMethods.calculateFares(tripDirectionDetails)} ${lang.getTranslatedValue('currency')}' : ''),
                                   style: TextStyle(fontFamily: 'Brand-Bold'),
                                 ),
                               ],
@@ -617,7 +622,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 color: Colors.black54,
                               ),
                               SizedBox(width: 16),
-                              Text('Cash'),
+                              Text(lang.getTranslatedValue('payment_method')),
                               SizedBox(width: 6),
                               Icon(
                                 Icons.keyboard_arrow_down,
@@ -627,7 +632,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        SizedBox(height: 24),
+                        SizedBox(height: 20),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: RaisedButton(
@@ -646,7 +651,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Order',
+                                    lang.getTranslatedValue('order_button'),
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -700,9 +705,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         RotateAnimatedTextKit(
                           repeatForever: true,
                           text: [
-                            "Requesting a Ride..",
-                            "Finding a Driver..",
-                            "Please wait.."
+                            lang.getTranslatedValue('wait_msg_1'),
+                            lang.getTranslatedValue('wait_msg_2'),
+                            lang.getTranslatedValue('wait_msg_3'),
                           ],
                           textStyle: TextStyle(fontSize: 30.0, fontFamily: "Brand-Regular"),
                           textAlign: TextAlign.start,
@@ -733,7 +738,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     Container(
                       width: double.infinity,
                       child: Text(
-                        'Cancel Ride',
+                        lang.getTranslatedValue('cancel_button'),
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 14.0, fontFamily: "Brand-Regular"),
                       ),
@@ -825,7 +830,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   SizedBox(height: 10),
-                                  Text('Call'),
+                                  Text(lang.getTranslatedValue('call_button')),
                                 ],
                               ),
                             ),
@@ -847,7 +852,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ),
                               ),
                               SizedBox(height: 10),
-                              Text('Details'),
+                              Text(lang.getTranslatedValue('details_button'))
                             ],
                           ),
                           //cancel
@@ -873,7 +878,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   SizedBox(height: 10),
-                                  Text('Cancel'),
+                                  Text(lang.getTranslatedValue('cancel_button')),
                                 ],
                               ),
                             ),

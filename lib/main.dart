@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Screens/home.dart';
 import 'package:wasseli/Screens/login.dart';
@@ -37,6 +38,24 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   Locale _locale;
+
+  void getLanguage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var _temp = prefs.getString('languageCode');
+    Locale _tempLang;
+    switch (_temp) {
+      case 'en':
+        _tempLang = Locale(_temp, 'US');
+        break;
+      case 'ar':
+        _tempLang = Locale(_temp, 'DZ');
+        break;
+      default:
+        _tempLang = Locale(_temp, 'DZ');
+    }
+    MyApp.setLocale(context, _tempLang);
+  }
+
   //
   void setLocale(Locale locale) {
     setState(() {

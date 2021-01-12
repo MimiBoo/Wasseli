@@ -40,10 +40,47 @@ class LoginScreen extends StatelessWidget {
     var lang = DemoLocalization.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          lang.getTranslatedValue('login_title'),
+          style: TextStyle(fontSize: 24, fontFamily: 'Brand-Bold', color: Colors.black),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10, left: 10),
+            child: DropdownButton(
+              underline: SizedBox(width: 0),
+              icon: Icon(
+                Icons.language,
+                color: Colors.black,
+              ),
+              items: Language.languageList()
+                  .map<DropdownMenuItem<Language>>(
+                    (lang) => DropdownMenuItem<Language>(
+                      value: lang,
+                      child: Row(
+                        children: [
+                          Text(lang.flag),
+                          Text(lang.name),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (Language language) {
+                _changeLanguage(context, language);
+              },
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 45),
+            SizedBox(height: 20),
             Image(
               image: AssetImage('assets/images/logo.png'),
               height: 250,
@@ -51,11 +88,6 @@ class LoginScreen extends StatelessWidget {
               alignment: Alignment.center,
             ),
             SizedBox(height: 1),
-            Text(
-              lang.getTranslatedValue('login_title'),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24, fontFamily: 'Brand-Bold'),
-            ),
             Padding(
               padding: EdgeInsets.all(20),
               child: Column(
@@ -127,29 +159,6 @@ class LoginScreen extends StatelessWidget {
               },
               child: Text(lang.getTranslatedValue('no_account_register')),
             ),
-            DropdownButton(
-              underline: SizedBox(width: 0),
-              icon: Icon(
-                Icons.language,
-                color: Colors.black,
-              ),
-              items: Language.languageList()
-                  .map<DropdownMenuItem<Language>>(
-                    (lang) => DropdownMenuItem<Language>(
-                      value: lang,
-                      child: Row(
-                        children: [
-                          Text(lang.flag),
-                          Text(lang.name),
-                        ],
-                      ),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (Language language) {
-                _changeLanguage(context, language);
-              },
-            ),
           ],
         ),
       ),
@@ -157,11 +166,12 @@ class LoginScreen extends StatelessWidget {
   }
 
   void loginAndAuthenticateUser(BuildContext context) async {
+    var lang = DemoLocalization.of(context);
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return ProgressDialog('Authenticating, Please wait...');
+        return ProgressDialog(lang.getTranslatedValue('wait_auth'));
       },
     );
     final User user = (await _firebaseAuth

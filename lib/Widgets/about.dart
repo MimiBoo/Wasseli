@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:wasseli/Widgets/divder.dart';
+import 'package:wasseli/localization/localization.dart';
 
 class WasseliAboutDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var lang = DemoLocalization.of(context);
     return Dialog(
       backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -12,7 +14,7 @@ class WasseliAboutDialog extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.all(15),
         width: double.infinity,
-        height: 155,
+        height: 165,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -22,12 +24,12 @@ class WasseliAboutDialog extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'About Wasseli',
-                style: TextStyle(fontFamily: 'Brand-Bold', fontSize: 20),
+                lang.getTranslatedValue('about_title'),
+                style: TextStyle(fontFamily: 'Brand-Bold', fontSize: 20, fontWeight: FontWeight.bold),
               ),
               DividerWidget(),
               Text(
-                'Wasseli app is a service to make transporting packages much easier and afordable.',
+                lang.getTranslatedValue('about_content'),
                 textAlign: TextAlign.justify,
                 style: TextStyle(fontFamily: 'Brand-Regular', fontSize: 18),
               ),
@@ -36,14 +38,14 @@ class WasseliAboutDialog extends StatelessWidget {
                 children: [
                   Container(
                     height: 30,
-                    width: 60,
+                    width: 70,
                     child: FlatButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
                       //color: Colors.amber,
                       child: Text(
-                        'Ok',
+                        lang.getTranslatedValue('ok_button'),
                         style: TextStyle(fontFamily: 'Brand-Bold', fontSize: 18, color: Colors.blue),
                       ),
                     ),

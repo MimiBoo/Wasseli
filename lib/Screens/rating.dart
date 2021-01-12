@@ -96,7 +96,7 @@ class _RatingScreenState extends State<RatingScreen> {
                           DatabaseReference requestRef = FirebaseDatabase.instance.reference().child('rides').child(widget.rideId).child('rating');
                           driverRatingRef.once().then((DataSnapshot snap) {
                             if (snap.value != null) {
-                              double oldRating = snap.value;
+                              double oldRating = snap.value.toDouble();
                               double avgRating = (oldRating + starCounter) / 2;
                               driverRatingRef.set(avgRating);
                             } else {

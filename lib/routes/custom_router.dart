@@ -5,6 +5,7 @@ import 'package:wasseli/Screens/login.dart';
 import 'package:wasseli/Screens/profile.dart';
 import 'package:wasseli/Screens/register.dart';
 import 'package:wasseli/Screens/search.dart';
+import 'package:wasseli/Screens/settings.dart';
 
 class CustomRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
@@ -19,6 +20,8 @@ class CustomRouter {
         return MaterialPageRoute(builder: (BuildContext context) => SearchScreen());
       case ProfilePage.idScreen:
         return MaterialPageRoute(builder: (BuildContext context) => ProfilePage());
+      case SettingScreen.idScreen:
+        return MaterialPageRoute(builder: (BuildContext context) => SettingScreen());
     }
     return MaterialPageRoute(builder: (BuildContext context) => LoginScreen());
   }
