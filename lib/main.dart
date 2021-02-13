@@ -7,11 +7,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wasseli/DataHandler/appData.dart';
-import 'package:wasseli/Screens/home.dart';
-import 'package:wasseli/Screens/login.dart';
 import 'package:wasseli/config.dart';
 import 'package:wasseli/localization/localization.dart';
-import 'package:wasseli/routes/custom_router.dart';
+import 'package:wasseli/views/front_page.dart';
+import 'package:wasseli/views/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -98,8 +97,9 @@ class _MyAppState extends State<MyApp> {
         }
         return supportedLocales.first;
       },
-      onGenerateRoute: CustomRouter.allRoutes,
-      initialRoute: FirebaseAuth.instance.currentUser == null ? LoginScreen.idScreen : HomeScreen.idScreen,
+      //onGenerateRoute: CustomRouter.allRoutes,
+      //initialRoute: FirebaseAuth.instance.currentUser == null ? LoginScreen.idScreen : HomeScreen.idScreen,
+      home: FirebaseAuth.instance.currentUser == null ? FrontPage() : HomeScreen(),
     );
   }
 }

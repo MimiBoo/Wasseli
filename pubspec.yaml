@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 0.1.0+1
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -23,7 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -45,6 +44,8 @@ dependencies:
   url_launcher: ^5.7.10
   shared_preferences: ^0.5.12+4
   smooth_star_rating: ^1.1.1
+  pinput: ^1.0.0
+  flutter_svg:
   #
   font_awesome_flutter: ^8.10.0
   animated_text_kit: ^2.5.4
@@ -56,14 +57,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -71,11 +70,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-     - assets/images/
-     - assets/sounds/
-     - lib/localization/languages/ar.json
-     - lib/localization/languages/en.json
-     
+    - assets/images/
+    - assets/sounds/
+    - lib/localization/languages/ar.json
+    - lib/localization/languages/en.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -98,6 +96,18 @@ flutter:
     - family: Brand-Bold
       fonts:
         - asset: assets/fonts/bolt-semibold.ttf
+    - family: NexaBold
+      fonts:
+        - asset: assets/fonts/NexaBold.otf
+    - family: NexaLight
+      fonts:
+        - asset: assets/fonts/NexaLight.otf
+    - family: Nirmala
+      fonts:
+        - asset: assets/fonts/Nirmala.ttf
+    - family: MS
+      fonts:
+        - asset: assets/fonts/TrebuchetMS.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
