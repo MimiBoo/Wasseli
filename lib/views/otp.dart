@@ -94,45 +94,6 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
     );
   }
-/*
-  void loginAndAuthenticateUser(BuildContext context, String pin) async {
-    var lang = DemoLocalization.of(context);
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return ProgressDialog(lang.getTranslatedValue('wait_auth'));
-      },
-    );
-    final User user = (await _firebaseAuth
-            .signInWithCredential(
-      PhoneAuthProvider.credential(verificationId: _verificationCode, smsCode: pin),
-    )
-            .catchError(
-      (err) {
-        Navigator.pop(context);
-        SnackBar(content: Text("Error: " + err.toString()));
-      },
-    ))
-        .user;
-    if (user != null) {
-      userRef.child(user.uid).once().then((DataSnapshot snap) {
-        if (snap.value != null) {
-          if (snap.value['phone'] != null && snap.value['first_name'] != null && snap.value['last_name'] != null) {
-            currentFirebaseUser = user;
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => RegisterScreen(widget.phone)));
-          } else {
-            currentFirebaseUser = user;
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
-            SnackBar(content: Text('Logged In'));
-          }
-        } else {
-          currentFirebaseUser = user;
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => RegisterScreen(widget.phone)));
-        }
-      });
-    }
-  }*/
 
   void loginAndAuthenticateUser(String pin) async {
     try {

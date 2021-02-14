@@ -1,12 +1,11 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wasseli/tools/color.dart';
 import 'package:wasseli/views/front_page.dart';
-import 'package:wasseli/views/order.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,12 +13,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Completer<GoogleMapController> _controller = Completer();
+  Completer<GoogleMapController> _googleMapController = Completer();
+  GoogleMapController newGoogleMapController;
+
+  Position currentPosition;
+  //var geoLocator = Geolocator();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+    target: LatLng(28.0339, 1.6596),
+    zoom: 5,
   );
+
+  void locatePosition() async {
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+    currentPosition = position;
+
+    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+    CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 18);
+    newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +41,14 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             GoogleMap(
               zoomControlsEnabled: false,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
               initialCameraPosition: _kGooglePlex,
               onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
+                if (_googleMapController == null) _googleMapController.complete(controller);
+                newGoogleMapController = controller;
+
+                locatePosition();
               },
             ),
             GestureDetector(
@@ -70,7 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
           child: FloatingActionButton(
             elevation: 0,
             backgroundColor: mainTeal,
-            onPressed: () {},
+            onPressed: () {
+              locatePosition();
+            },
             child: SvgPicture.asset(
               'assets/images/gps.svg',
               fit: BoxFit.cover,
@@ -88,13 +107,13 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: IconButton(
                     icon: SvgPicture.asset(
                       'assets/images/menu.svg',
                       fit: BoxFit.cover,
                       color: Colors.white,
-                      width: 40,
+                      width: 30,
                     ),
                     onPressed: () {
                       FirebaseAuth.instance.signOut();
@@ -103,13 +122,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: IconButton(
                     icon: SvgPicture.asset(
                       'assets/images/profile.svg',
                       fit: BoxFit.cover,
                       color: Colors.white,
-                      width: 40,
+                      width: 30,
                     ),
                     onPressed: () {
                       //Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
