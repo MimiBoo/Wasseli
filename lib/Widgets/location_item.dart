@@ -60,6 +60,7 @@ class LocationItem extends StatelessWidget {
 
   void getPlaceDetails(String placeId, BuildContext context) async {
     showDialog(context: context, barrierDismissible: false, builder: (BuildContext context) => ProgressDialog('Setting Drop Off...'));
+    //print(placeId);
     String placeDetailUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$placesKey";
     var res = await RequestHelper.getRequest(placeDetailUrl);
     Navigator.of(context).pop();
@@ -70,11 +71,12 @@ class LocationItem extends StatelessWidget {
       Address address = Address();
       address.placeFormattedAddress = res["result"]["name"];
       address.placeId = placeId;
-      address.latitude = res["result"]["geometry"]["location"]["latitude"];
-      address.longitude = res["result"]["geometry"]["location"]["longitude"];
+      address.latitude = res["result"]["geometry"]["location"]["lat"];
+      address.longitude = res["result"]["geometry"]["location"]["lng"];
 
       Provider.of<AppData>(context, listen: false).updateDropOffLocationAddress(address);
-      print("DROP OFF LOCATION: ${address.placeFormattedAddress}");
+      //print("DROP OFF LOCATION: ${address.latitude}");
+      Navigator.of(context).pop("obtainDirection");
     }
   }
 }

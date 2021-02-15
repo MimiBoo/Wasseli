@@ -1,13 +1,13 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
-import 'package:wasseli/config.dart';
+import 'package:wasseli/Widgets/progressDialog.dart';
 import 'package:wasseli/tools/color.dart';
-import 'package:wasseli/views/front_page.dart';
 import 'package:wasseli/views/profile.dart';
 import 'package:wasseli/views/search.dart';
 
@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Position currentPosition;
   //var geoLocator = Geolocator();
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
+  static final CameraPosition _algeria = CameraPosition(
     target: LatLng(28.0339, 1.6596),
     zoom: 5,
   );
@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
               compassEnabled: false,
               zoomGesturesEnabled: true,
               zoomControlsEnabled: false,
-              initialCameraPosition: _kGooglePlex,
+              initialCameraPosition: _algeria,
               onMapCreated: (GoogleMapController controller) {
                 if (_googleMapController == null) _googleMapController.complete(controller);
                 newGoogleMapController = controller;
@@ -59,8 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchScreen()));
+              onTap: () async {
+                var res = await Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchScreen()));
+                if (res == "obtainDirection") {
+                  await getPlaceDirection();
+                }
               },
               child: Container(
                 margin: EdgeInsets.only(top: 46, left: 28, right: 28),
@@ -145,5 +148,21 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> getPlaceDirection() async {
+    var initialPos = Provider.of<AppData>(context, listen: false).userPickUpLocation;
+    var finalPos = Provider.of<AppData>(context, listen: false).userDropOffLocation;
+
+    var pickUpLatLng = LatLng(initialPos.latitude, initialPos.longitude);
+    var dropOffLatLng = LatLng(finalPos.latitude, finalPos.longitude);
+
+    showDialog(context: context, barrierDismissible: false, builder: (BuildContext context) => ProgressDialog('Please wait...'));
+
+    var details = await HelperMethods.obtainDirectionsDetails(pickUpLatLng, dropOffLatLng);
+
+    Navigator.of(context).pop();
+
+    print("ENCODED POINTS: ${details.encodedPoints}");
   }
 }
