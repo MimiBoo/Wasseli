@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:wasseli/Widgets/button_large.dart';
 import 'package:wasseli/tools/color.dart';
+import 'package:wasseli/views/front_page.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -142,7 +144,14 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(height: 42),
               CustomLargeButton(title: 'Edit Profile', color: mainTeal, onTap: () {}, titleColor: Colors.white),
               SizedBox(height: 18),
-              CustomLargeButton(title: 'Rest Password', color: mainTeal, onTap: () {}, titleColor: Colors.white)
+              CustomLargeButton(
+                  title: 'Sign Out',
+                  color: Colors.red,
+                  onTap: () {
+                    FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => FrontPage()));
+                  },
+                  titleColor: Colors.white)
             ],
           ),
         ),

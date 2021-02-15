@@ -7,6 +7,7 @@ import 'package:wasseli/main.dart';
 
 class AppData extends ChangeNotifier {
   Address pickUpLocation, dropOffLocation;
+  Address userPickUpLocation, userDropOffLocation;
   LatLng _userLocation;
 
   bool isLoggedIn;
@@ -16,8 +17,8 @@ class AppData extends ChangeNotifier {
   LatLng get userLocation => _userLocation;
 
   void updatePickUpLocationAddress(Address pickUpAddress) {
-    pickUpLocation = pickUpAddress;
-    _userLocation = LatLng(pickUpAddress.latitude, pickUpAddress.longitude);
+    userPickUpLocation = pickUpAddress;
+    //_userLocation = LatLng(pickUpAddress.latitude, pickUpAddress.longitude);
     notifyListeners();
   }
 

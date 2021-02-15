@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:wasseli/Helpers/helperMethods.dart';
 import 'package:wasseli/tools/color.dart';
 import 'package:wasseli/views/front_page.dart';
+import 'package:wasseli/views/profile.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -31,6 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
     LatLng latLngPosition = LatLng(position.latitude, position.longitude);
     CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 18);
     newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+    String address = await HelperMethods.searchCoordinateAddress(position, context);
+    print("ADDRESS: $address");
   }
 
   @override
@@ -40,20 +45,21 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Stack(
           children: [
             GoogleMap(
-              zoomControlsEnabled: false,
-              myLocationEnabled: true,
               myLocationButtonEnabled: false,
+              myLocationEnabled: true,
+              compassEnabled: false,
+              zoomGesturesEnabled: true,
+              zoomControlsEnabled: false,
               initialCameraPosition: _kGooglePlex,
               onMapCreated: (GoogleMapController controller) {
                 if (_googleMapController == null) _googleMapController.complete(controller);
                 newGoogleMapController = controller;
-
                 locatePosition();
               },
             ),
             GestureDetector(
               onTap: () {
-                //Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchScreen()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchScreen()));
               },
               child: Container(
                 margin: EdgeInsets.only(top: 46, left: 28, right: 28),
@@ -101,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBar(
           child: Container(
-            height: 70,
+            height: 50,
             color: mainBlack,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,10 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.white,
                       width: 30,
                     ),
-                    onPressed: () {
-                      FirebaseAuth.instance.signOut();
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => FrontPage()));
-                    },
+                    onPressed: () {},
                   ),
                 ),
                 Padding(
@@ -131,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 30,
                     ),
                     onPressed: () {
-                      //Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
                     },
                   ),
                 ),
