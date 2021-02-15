@@ -23,8 +23,7 @@ class AppData extends ChangeNotifier {
   }
 
   void updateDropOffLocationAddress(Address dropOffAddress) {
-    dropOffLocation = dropOffAddress;
-
+    userDropOffLocation = dropOffAddress;
     notifyListeners();
   }
 

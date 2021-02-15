@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:wasseli/Helpers/requestHelper.dart';
+import 'package:wasseli/Models/placePrediction.dart';
 import 'package:wasseli/Widgets/location_item.dart';
+import 'package:wasseli/config.dart';
 import 'package:wasseli/tools/color.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -9,6 +12,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  List<PlacePrediction> placePredictionList = [];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -49,6 +53,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       height: 50,
                       width: MediaQuery.of(context).size.width * 0.65,
                       child: TextField(
+                        onChanged: (value) {
+                          findPlaces(value);
+                        },
                         decoration: InputDecoration(
                           hintText: "Where to deliver?",
                           hintStyle: TextStyle(color: Colors.white, fontFamily: 'NexaLight', fontSize: 25),
@@ -69,31 +76,44 @@ class _SearchScreenState extends State<SearchScreen> {
                   thickness: 1,
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: ListView(
-                    children: [
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                      LocationItem(),
-                    ],
-                  ),
-                ),
-              ),
+              (placePredictionList.length > 0)
+                  ? Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: ListView.separated(
+                          itemCount: placePredictionList.length,
+                          itemBuilder: (context, index) => LocationItem(placePrediction: placePredictionList[index]),
+                          separatorBuilder: (context, index) => Divider(color: dviderColor, thickness: 1),
+                          physics: ClampingScrollPhysics(),
+                        ),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ],
       )),
     );
+  }
+
+  void findPlaces(String placeName) async {
+    if (placeName.length >= 1) {
+      /**&location=${userLocation.latitude},${userLocation.longitude}&radius=100&components=country:dz */
+      String autoCompleteUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$placesKey&sessiontoken=1234567890&components=country:dz';
+      var res = await RequestHelper.getRequest(autoCompleteUrl);
+
+      if (res == 'failed') {
+        return;
+      }
+      //print("PLACES: $res");
+
+      if (res["status"] == "OK") {
+        var predictions = res["predictions"];
+        var placesList = (predictions as List).map((e) => PlacePrediction.fromJson(e)).toList();
+        setState(() {
+          placePredictionList = placesList;
+        });
+      }
+    }
   }
 }

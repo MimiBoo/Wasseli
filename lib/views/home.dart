@@ -5,9 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
+import 'package:wasseli/config.dart';
 import 'package:wasseli/tools/color.dart';
 import 'package:wasseli/views/front_page.dart';
 import 'package:wasseli/views/profile.dart';
+import 'package:wasseli/views/search.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -35,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
     newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
     String address = await HelperMethods.searchCoordinateAddress(position, context);
-    print("ADDRESS: $address");
   }
 
   @override
