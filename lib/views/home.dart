@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
+import 'package:wasseli/Widgets/button.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
 import 'package:wasseli/tools/color.dart';
 import 'package:wasseli/views/profile.dart';
@@ -44,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String address = await HelperMethods.searchCoordinateAddress(position, context);
   }
 
+  bool isOrder = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -66,94 +69,196 @@ class _HomeScreenState extends State<HomeScreen> {
                 locatePosition();
               },
             ),
-            GestureDetector(
-              onTap: () async {
-                var res = await Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchScreen()));
-                if (res == "obtainDirection") {
-                  await getPlaceDirection();
-                }
-              },
-              child: Container(
-                margin: EdgeInsets.only(top: 46, left: 28, right: 28),
-                height: 80,
-                decoration: BoxDecoration(color: mainBlack, borderRadius: BorderRadius.circular(20)),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: SvgPicture.asset(
-                        'assets/images/pin.svg',
-                        fit: BoxFit.cover,
-                        color: Colors.white,
-                        width: 30,
+            !isOrder
+                ? GestureDetector(
+                    onTap: () async {
+                      var res = await Navigator.of(context).push(MaterialPageRoute(builder: (_) => SearchScreen()));
+                      if (res == "obtainDirection") {
+                        setState(() {
+                          isOrder = true;
+                        });
+                        await getPlaceDirection();
+                      }
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(top: 46, left: 28, right: 28),
+                      height: 80,
+                      decoration: BoxDecoration(color: mainBlack, borderRadius: BorderRadius.circular(20)),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: SvgPicture.asset(
+                              'assets/images/pin.svg',
+                              fit: BoxFit.cover,
+                              color: Colors.white,
+                              width: 30,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'Where to deliver?',
+                            style: TextStyle(color: Colors.white, fontFamily: 'NexaLight', fontSize: 25),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(width: 10),
-                    Text(
-                      'Where to deliver?',
-                      style: TextStyle(color: Colors.white, fontFamily: 'NexaLight', fontSize: 25),
+                  )
+                : RaisedButton(
+                    onPressed: () {
+                      setState(() {
+                        isOrder = false;
+                      });
+                    },
+                  ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      blurRadius: 16,
+                      spreadRadius: 0.5,
+                      offset: Offset(0.7, 0.7),
                     ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: mainTeal,
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/truck.png',
+                              height: 70,
+                              width: 80,
+                            ),
+                            SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Mini Truck',
+                                  style: TextStyle(fontSize: 18, fontFamily: 'NexaBold'),
+                                ),
+                                Text(
+                                  '10 Km',
+                                  style: TextStyle(fontSize: 16, fontFamily: 'NexaBold', color: Colors.black45),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 26),
+                      child: Row(
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.moneyCheckAlt,
+                            size: 18,
+                            color: mainBlack,
+                          ),
+                          SizedBox(width: 16),
+                          Text(
+                            'Cash',
+                            style: TextStyle(fontSize: 16, fontFamily: 'NexaBold', color: mainBlack),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: CustomButton(
+                        color: mainTeal,
+                        title: 'Request',
+                        onTap: () {
+                          print("clicked");
+                        },
+                        titleColor: Colors.white,
+                      ),
+                    )
                   ],
                 ),
               ),
             ),
           ],
         ),
-        floatingActionButton: Container(
-          height: 70,
-          width: 70,
-          child: FloatingActionButton(
-            elevation: 0,
-            backgroundColor: mainTeal,
-            onPressed: () {
-              locatePosition();
-            },
-            child: SvgPicture.asset(
-              'assets/images/gps.svg',
-              fit: BoxFit.cover,
-              color: Colors.white,
-              width: 40,
-            ),
-          ),
-        ),
+        floatingActionButton: !isOrder
+            ? Container(
+                height: 70,
+                width: 70,
+                child: FloatingActionButton(
+                  elevation: 0,
+                  backgroundColor: mainTeal,
+                  onPressed: () {
+                    locatePosition();
+                  },
+                  child: SvgPicture.asset(
+                    'assets/images/gps.svg',
+                    fit: BoxFit.cover,
+                    color: Colors.white,
+                    width: 40,
+                  ),
+                ),
+              )
+            : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            height: 50,
-            color: mainBlack,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/images/menu.svg',
-                      fit: BoxFit.cover,
-                      color: Colors.white,
-                      width: 30,
-                    ),
-                    onPressed: () {},
+        bottomNavigationBar: !isOrder
+            ? BottomAppBar(
+                child: Container(
+                  height: 50,
+                  color: mainBlack,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/images/menu.svg',
+                            fit: BoxFit.cover,
+                            color: Colors.white,
+                            width: 30,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/images/profile.svg',
+                            fit: BoxFit.cover,
+                            color: Colors.white,
+                            width: 30,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/images/profile.svg',
-                      fit: BoxFit.cover,
-                      color: Colors.white,
-                      width: 30,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+              )
+            : null,
       ),
     );
   }
