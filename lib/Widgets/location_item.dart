@@ -60,7 +60,6 @@ class LocationItem extends StatelessWidget {
 
   void getPlaceDetails(String placeId, BuildContext context) async {
     showDialog(context: context, barrierDismissible: false, builder: (BuildContext context) => ProgressDialog('Setting Drop Off...'));
-    //print(placeId);
     String placeDetailUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$placesKey";
     var res = await RequestHelper.getRequest(placeDetailUrl);
     Navigator.of(context).pop();

@@ -18,7 +18,7 @@ class AppData extends ChangeNotifier {
 
   void updatePickUpLocationAddress(Address pickUpAddress) {
     userPickUpLocation = pickUpAddress;
-    //_userLocation = LatLng(pickUpAddress.latitude, pickUpAddress.longitude);
+    _userLocation = LatLng(pickUpAddress.latitude, pickUpAddress.longitude);
     notifyListeners();
   }
 

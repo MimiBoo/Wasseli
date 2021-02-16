@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/requestHelper.dart';
 import 'package:wasseli/Models/placePrediction.dart';
 import 'package:wasseli/Widgets/location_item.dart';
@@ -97,9 +99,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void findPlaces(String placeName) async {
+    var userLocation = Provider.of<AppData>(context, listen: false).userLocation;
     if (placeName.length >= 1) {
-      /**&location=${userLocation.latitude},${userLocation.longitude}&radius=100&components=country:dz */
-      String autoCompleteUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$placesKey&sessiontoken=1234567890&components=country:dz';
+      String autoCompleteUrl = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&location=${userLocation.latitude},${userLocation.longitude}&radius=100&components=country:dz&key=$placesKey&sessiontoken=1234567890';
       var res = await RequestHelper.getRequest(autoCompleteUrl);
 
       if (res == 'failed') {

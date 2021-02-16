@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -21,7 +22,11 @@ class _HomeScreenState extends State<HomeScreen> {
   GoogleMapController newGoogleMapController;
 
   Position currentPosition;
-  //var geoLocator = Geolocator();
+
+  List<LatLng> pLineCoordinates = [];
+  Set<Polyline> polyLineSet = {};
+  Set<Marker> markerSet = {};
+  Set<Circle> circleSet = {};
 
   static final CameraPosition _algeria = CameraPosition(
     target: LatLng(28.0339, 1.6596),
@@ -51,6 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
               compassEnabled: false,
               zoomGesturesEnabled: true,
               zoomControlsEnabled: false,
+              polylines: polyLineSet,
+              markers: markerSet,
+              circles: circleSet,
               initialCameraPosition: _algeria,
               onMapCreated: (GoogleMapController controller) {
                 if (_googleMapController == null) _googleMapController.complete(controller);
@@ -163,6 +171,85 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Navigator.of(context).pop();
 
-    print("ENCODED POINTS: ${details.encodedPoints}");
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> decodedPolyLinePoints = polylinePoints.decodePolyline(details.encodedPoints);
+    polyLineSet.clear();
+    pLineCoordinates.clear();
+    if (decodedPolyLinePoints.isNotEmpty) {
+      decodedPolyLinePoints.forEach((PointLatLng pointLatLng) {
+        pLineCoordinates.add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
+      });
+    }
+
+    Marker pickUpMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: InfoWindow(title: 'You', snippet: 'Your current location'),
+      position: pickUpLatLng,
+      markerId: MarkerId('YOU'),
+    );
+    Marker dropOffMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: InfoWindow(title: 'Drop Off', snippet: 'Your destination'),
+      position: dropOffLatLng,
+      markerId: MarkerId('DROPOOF'),
+    );
+
+    Circle pickUpCirle = Circle(
+      fillColor: mainTeal,
+      center: pickUpLatLng,
+      radius: 8,
+      strokeWidth: 4,
+      strokeColor: Colors.grey,
+      circleId: CircleId('PickUp'),
+    );
+    Circle dropOffCirle = Circle(
+      fillColor: mainTeal,
+      center: dropOffLatLng,
+      radius: 8,
+      strokeWidth: 4,
+      strokeColor: Colors.grey,
+      circleId: CircleId('DropOff'),
+    );
+
+    setState(() {
+      polyLineSet.clear();
+      Polyline polyline = Polyline(
+        polylineId: PolylineId('route'),
+        color: mainTeal,
+        width: 5,
+        jointType: JointType.round,
+        points: pLineCoordinates,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        geodesic: true,
+      );
+      polyLineSet.add(polyline);
+      circleSet.add(pickUpCirle);
+      circleSet.add(dropOffCirle);
+      markerSet.add(pickUpMarker);
+      markerSet.add(dropOffMarker);
+    });
+
+    LatLngBounds latLngBounds;
+    if (pickUpLatLng.latitude > dropOffLatLng.latitude && pickUpLatLng.longitude > dropOffLatLng.longitude) {
+      latLngBounds = LatLngBounds(
+        southwest: dropOffLatLng,
+        northeast: pickUpLatLng,
+      );
+    } else if (pickUpLatLng.latitude > dropOffLatLng.latitude) {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(dropOffLatLng.latitude, pickUpLatLng.longitude),
+        northeast: LatLng(pickUpLatLng.latitude, dropOffLatLng.longitude),
+      );
+    } else if (pickUpLatLng.longitude > dropOffLatLng.longitude) {
+      latLngBounds = LatLngBounds(
+        southwest: LatLng(pickUpLatLng.latitude, dropOffLatLng.longitude),
+        northeast: LatLng(dropOffLatLng.latitude, pickUpLatLng.longitude),
+      );
+    } else {
+      latLngBounds = LatLngBounds(southwest: pickUpLatLng, northeast: dropOffLatLng);
+    }
+
+    newGoogleMapController.animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 70));
   }
 }
