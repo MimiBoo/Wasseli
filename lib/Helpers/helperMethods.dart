@@ -72,17 +72,15 @@ class HelperMethods {
     }
   }
 
-  static void getCurrentOnlineUserInfo() {
-    print(currentFirebaseUser.uid);
+  static void getCurrentOnlineUserInfo() async {
     String userId = currentFirebaseUser.uid;
 
     DatabaseReference ref = FirebaseDatabase.instance.reference().child('users').child(userId);
 
-    ref.once().then((DataSnapshot snap) {
-      if (snap.value != null) {
-        currentUserInfo = Users.fromSnapshot(snap);
-      }
-    });
+    var snap = await ref.once();
+    if (snap.value != null) {
+      currentUserInfo = Users.fromSnapshot(snap);
+    }
   }
 
   static double createRandomNumber(int number) {

@@ -51,8 +51,6 @@ dependencies:
   animated_text_kit: ^2.5.4
   diffutil_dart: ^1.0.2
   #
-  flutter_localizations:
-    sdk: flutter
 
 dev_dependencies:
   flutter_test:

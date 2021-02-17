@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:wasseli/Widgets/button_large.dart';
+import 'package:wasseli/config.dart';
 import 'package:wasseli/tools/color.dart';
 import 'package:wasseli/views/front_page.dart';
 
@@ -61,8 +62,8 @@ class ProfileScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      height: 108,
-                      width: 108,
+                      height: 100,
+                      width: 100,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage(
@@ -77,12 +78,13 @@ class ProfileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Melkia Mohamed',
+                          "${currentUserInfo.firstName} ${currentUserInfo.lastName}",
                           style: TextStyle(color: Colors.white, fontFamily: 'NexaLight', fontSize: 25),
                         ),
                         SmoothStarRating(
                           color: Color(0xFFFFC107),
                           borderColor: Colors.white,
+                          isReadOnly: true,
                           starCount: 5,
                           allowHalfRating: false,
                         ),
@@ -96,20 +98,20 @@ class ProfileScreen extends StatelessWidget {
                 color: dviderColor,
               ),
               SizedBox(height: 35),
-              Row(
-                children: [
-                  Text(
-                    'BALANCE:',
-                    style: TextStyle(color: mainTeal, fontSize: 25, fontFamily: 'NexaBold'),
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    '2000 DA',
-                    style: TextStyle(color: Colors.white, fontSize: 25, fontFamily: 'NexaBold'),
-                  ),
-                ],
-              ),
-              SizedBox(height: 42),
+              // Row(
+              //   children: [
+              //     Text(
+              //       'BALANCE:',
+              //       style: TextStyle(color: mainTeal, fontSize: 25, fontFamily: 'NexaBold'),
+              //     ),
+              //     SizedBox(width: 10),
+              //     Text(
+              //       '2000 DA',
+              //       style: TextStyle(color: Colors.white, fontSize: 25, fontFamily: 'NexaBold'),
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(height: 42),
               Row(
                 children: [
                   Text(
@@ -128,12 +130,12 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   Text(
                     'PHONE:',
-                    style: TextStyle(color: mainTeal, fontSize: 25, fontFamily: 'NexaBold'),
+                    style: TextStyle(color: mainTeal, fontSize: 20, fontFamily: 'NexaBold'),
                   ),
                   SizedBox(width: 10),
                   Text(
-                    '0779291985',
-                    style: TextStyle(color: Colors.white, fontSize: 25, fontFamily: 'NexaBold'),
+                    currentUserInfo.phone,
+                    style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'NexaBold'),
                   ),
                 ],
               ),
