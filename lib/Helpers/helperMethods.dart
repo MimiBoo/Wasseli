@@ -73,15 +73,14 @@ class HelperMethods {
   }
 
   static void getCurrentOnlineUserInfo() {
-    firebaseUser = FirebaseAuth.instance.currentUser;
-
-    String userId = firebaseUser.uid;
+    print(currentFirebaseUser.uid);
+    String userId = currentFirebaseUser.uid;
 
     DatabaseReference ref = FirebaseDatabase.instance.reference().child('users').child(userId);
 
     ref.once().then((DataSnapshot snap) {
       if (snap.value != null) {
-        currentUser = Users.fromSnapshot(snap);
+        currentUserInfo = Users.fromSnapshot(snap);
       }
     });
   }
@@ -94,7 +93,7 @@ class HelperMethods {
   }
 
   static sendNotificationToDriver(String token, BuildContext context, String rideRequestId) async {
-    var destination = Provider.of<AppData>(context, listen: false).dropOffLocation;
+    var destination = Provider.of<AppData>(context, listen: false).userDropOffLocation;
 
     var res = await http.post(
       'https://fcm.googleapis.com/fcm/send',

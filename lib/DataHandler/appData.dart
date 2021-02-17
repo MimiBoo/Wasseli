@@ -6,7 +6,6 @@ import 'package:wasseli/config.dart';
 import 'package:wasseli/main.dart';
 
 class AppData extends ChangeNotifier {
-  Address pickUpLocation, dropOffLocation;
   Address userPickUpLocation, userDropOffLocation;
   LatLng _userLocation;
 

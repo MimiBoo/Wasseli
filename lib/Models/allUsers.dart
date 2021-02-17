@@ -2,16 +2,16 @@ import 'package:firebase_database/firebase_database.dart';
 
 class Users {
   String id;
-  String email;
-  String name;
+  String firstName;
+  String lastName;
   String phone;
 
-  Users({this.id, this.name, this.email, this.phone});
+  Users({this.id, this.firstName, this.lastName, this.phone});
 
   Users.fromSnapshot(DataSnapshot dataSnapshot) {
     id = dataSnapshot.key;
-    email = dataSnapshot.value['email'];
-    name = dataSnapshot.value['name'];
+    firstName = dataSnapshot.value['first_name'];
+    lastName = dataSnapshot.value['last_name'];
     phone = dataSnapshot.value['phone'];
   }
 }

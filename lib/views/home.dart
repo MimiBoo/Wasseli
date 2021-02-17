@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,6 +12,8 @@ import 'package:wasseli/Helpers/helperMethods.dart';
 import 'package:wasseli/Models/directionDetails.dart';
 import 'package:wasseli/Widgets/button.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
+import 'package:wasseli/config.dart';
+import 'package:wasseli/main.dart';
 import 'package:wasseli/tools/color.dart';
 import 'package:wasseli/views/profile.dart';
 import 'package:wasseli/views/search.dart';
@@ -52,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void restApp() {
     setState(() {
       isOrder = false;
+      isRequesting = false;
       markerSet.clear();
       circleSet.clear();
       polyLineSet.clear();
@@ -61,6 +65,45 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   bool isOrder = false;
+  bool isRequesting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    HelperMethods.getCurrentOnlineUserInfo();
+  }
+
+  void saveRideRequest() {
+    var pickUp = Provider.of<AppData>(context, listen: false).userPickUpLocation;
+    var dropOff = Provider.of<AppData>(context, listen: false).userDropOffLocation;
+
+    Map pickUpLocationMap = {
+      "latitude": pickUp.latitude,
+      "longitude": pickUp.longitude
+    };
+    Map dropOffLocationMap = {
+      "latitude": dropOff.latitude,
+      "longitude": dropOff.longitude
+    };
+
+    Map rideInfo = {
+      "payment_method": "cash",
+      "status": "waiting",
+      "pickup": pickUpLocationMap,
+      "dropoff": dropOffLocationMap,
+      "created_at": DateTime.now().toString(),
+      "rider_name": "${currentUserInfo.firstName} ${currentUserInfo.lastName}",
+      "rider_phone": currentUserInfo.phone,
+      "prickup_address": pickUp.placeFormattedAddress,
+      "dropoff_address": dropOff.placeFormattedAddress,
+    };
+    requestRef.set(rideInfo);
+  }
+
+  void cancelRideRequest() {
+    requestRef.remove();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -232,11 +275,89 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               color: mainTeal,
                               title: 'Request',
                               onTap: () {
-                                print("clicked");
+                                saveRideRequest();
+                                setState(() {
+                                  isRequesting = true;
+                                });
                               },
                               titleColor: Colors.white,
                             ),
                           )
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(),
+            isRequesting
+                ? Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 250,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 16,
+                            spreadRadius: 0.5,
+                            offset: Offset(0.7, 0.7),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 12),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              RotateAnimatedTextKit(
+                                isRepeatingAnimation: true,
+                                text: [
+                                  "Requesting a ride",
+                                  "Please wait..",
+                                  "Finding a driver"
+                                ],
+                                textStyle: TextStyle(fontSize: 30.0, fontFamily: "Brand-Regular"),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                          Expanded(child: Container()),
+                          Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  cancelRideRequest();
+                                  restApp();
+                                },
+                                child: Container(
+                                  height: 60,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(26),
+                                    border: Border.all(
+                                      width: 2,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 26,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                'Cancel Ride',
+                                style: TextStyle(fontSize: 14.0, fontFamily: "NexaBold"),
+                              )
+                            ],
+                          ),
+                          SizedBox(height: 10),
                         ],
                       ),
                     ),

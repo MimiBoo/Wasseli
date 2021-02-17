@@ -24,6 +24,7 @@ void main() async {
 
 DatabaseReference userRef = FirebaseDatabase().reference().child('users');
 DatabaseReference driverRef = FirebaseDatabase().reference().child('drivers');
+DatabaseReference requestRef = FirebaseDatabase.instance.reference().child('Ride Request').push();
 
 class MyApp extends StatefulWidget {
   static void setLocale(BuildContext context, Locale locale) {
