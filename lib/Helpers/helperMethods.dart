@@ -62,11 +62,11 @@ class HelperMethods {
     } else if (distence <= 20000 && distence >= 10000) {
       return 1000;
     } else {
-      double timeTravelfare = (directionDetails.durationValue / 60) * 0.2;
-      double distanceTravelfare = (directionDetails.distanceValue / 1000) * 0.2;
+      double timeTravelfare = (directionDetails.durationValue / 60) * 0.38;
+      double distanceTravelfare = (directionDetails.distanceValue / 1000) * 0.38;
       double totalPrice = timeTravelfare + distanceTravelfare;
 
-      double totalLocal = totalPrice * 131.90;
+      double totalLocal = totalPrice * 133;
 
       return totalLocal.truncate();
     }

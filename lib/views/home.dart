@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wasseli/DataHandler/appData.dart';
 import 'package:wasseli/Helpers/helperMethods.dart';
+import 'package:wasseli/Models/directionDetails.dart';
 import 'package:wasseli/Widgets/button.dart';
 import 'package:wasseli/Widgets/progressDialog.dart';
 import 'package:wasseli/tools/color.dart';
@@ -19,7 +20,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Completer<GoogleMapController> _googleMapController = Completer();
   GoogleMapController newGoogleMapController;
 
@@ -29,6 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Set<Polyline> polyLineSet = {};
   Set<Marker> markerSet = {};
   Set<Circle> circleSet = {};
+
+  DirectionDetails directionDetails;
 
   static final CameraPosition _algeria = CameraPosition(
     target: LatLng(28.0339, 1.6596),
@@ -44,6 +47,17 @@ class _HomeScreenState extends State<HomeScreen> {
     newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
     String address = await HelperMethods.searchCoordinateAddress(position, context);
+  }
+
+  void restApp() {
+    setState(() {
+      isOrder = false;
+      markerSet.clear();
+      circleSet.clear();
+      polyLineSet.clear();
+      pLineCoordinates.clear();
+    });
+    locatePosition();
   }
 
   bool isOrder = false;
@@ -63,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
               markers: markerSet,
               circles: circleSet,
               initialCameraPosition: _algeria,
-              onMapCreated: (GoogleMapController controller) {
+              onMapCreated: (GoogleMapController controller) async {
                 if (_googleMapController == null) _googleMapController.complete(controller);
                 newGoogleMapController = controller;
                 locatePosition();
@@ -104,100 +118,130 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   )
-                : RaisedButton(
-                    onPressed: () {
-                      setState(() {
-                        isOrder = false;
-                      });
-                    },
-                  ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey,
-                      blurRadius: 16,
-                      spreadRadius: 0.5,
-                      offset: Offset(0.7, 0.7),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: mainTeal,
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              'assets/images/truck.png',
-                              height: 70,
-                              width: 80,
-                            ),
-                            SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Mini Truck',
-                                  style: TextStyle(fontSize: 18, fontFamily: 'NexaBold'),
-                                ),
-                                Text(
-                                  '10 Km',
-                                  style: TextStyle(fontSize: 16, fontFamily: 'NexaBold', color: Colors.black45),
-                                ),
-                              ],
+                : Positioned(
+                    top: 38,
+                    left: 20,
+                    child: GestureDetector(
+                      onTap: restApp,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(22),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              blurRadius: 6,
+                              spreadRadius: 0.5,
+                              offset: Offset(0.7, 0.7),
                             ),
                           ],
                         ),
+                        child: CircleAvatar(
+                          backgroundColor: mainBlack,
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                          radius: 20,
+                        ),
                       ),
                     ),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 26),
-                      child: Row(
-                        children: [
-                          Icon(
-                            FontAwesomeIcons.moneyCheckAlt,
-                            size: 18,
-                            color: mainBlack,
-                          ),
-                          SizedBox(width: 16),
-                          Text(
-                            'Cash',
-                            style: TextStyle(fontSize: 16, fontFamily: 'NexaBold', color: mainBlack),
+                  ),
+            isOrder
+                ? Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            blurRadius: 16,
+                            spreadRadius: 0.5,
+                            offset: Offset(0.7, 0.7),
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(height: 24),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: CustomButton(
-                        color: mainTeal,
-                        title: 'Request',
-                        onTap: () {
-                          print("clicked");
-                        },
-                        titleColor: Colors.white,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: mainTeal,
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/truck.png',
+                                    height: 70,
+                                    width: 80,
+                                  ),
+                                  SizedBox(width: 16),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Mini Truck',
+                                        style: TextStyle(fontSize: 18, fontFamily: 'NexaBold'),
+                                      ),
+                                      Text(
+                                        (directionDetails != null) ? directionDetails.distanceText : '',
+                                        style: TextStyle(fontSize: 16, fontFamily: 'NexaBold', color: Colors.black45),
+                                      ),
+                                    ],
+                                  ),
+                                  Expanded(child: Container()),
+                                  Text(
+                                    ((directionDetails != null) ? '${HelperMethods.calculateFares(directionDetails)} DA' : ''),
+                                    style: TextStyle(fontSize: 16, fontFamily: 'NexaBold', color: Colors.black45),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 26),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  FontAwesomeIcons.moneyCheckAlt,
+                                  size: 18,
+                                  color: mainBlack,
+                                ),
+                                SizedBox(width: 16),
+                                Text(
+                                  'Cash',
+                                  style: TextStyle(fontSize: 16, fontFamily: 'NexaBold', color: mainBlack),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 24),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: CustomButton(
+                              color: mainTeal,
+                              title: 'Request',
+                              onTap: () {
+                                print("clicked");
+                              },
+                              titleColor: Colors.white,
+                            ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
-              ),
-            ),
+                    ),
+                  )
+                : Container(),
           ],
         ),
         floatingActionButton: !isOrder
@@ -273,6 +317,10 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(context: context, barrierDismissible: false, builder: (BuildContext context) => ProgressDialog('Please wait...'));
 
     var details = await HelperMethods.obtainDirectionsDetails(pickUpLatLng, dropOffLatLng);
+
+    setState(() {
+      directionDetails = details;
+    });
 
     Navigator.of(context).pop();
 
