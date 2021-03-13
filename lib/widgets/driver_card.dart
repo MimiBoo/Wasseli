@@ -50,7 +50,7 @@ class _DriverCardState extends State<DriverCard> {
             CircleAvatar(
               backgroundColor: mainBlack,
               child: Text(
-                '4.6',
+                widget.driver.rating.toString(),
                 style: TextStyle(color: Colors.white),
               ),
             ),

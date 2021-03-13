@@ -38,41 +38,27 @@ class _HomeScreenState extends State<HomeScreen> {
       if (map != null) {
         var callBack = map['callBack'];
 
-        //latitude will be retrieved from map['latitude']
-        //longitude will be retrieved from map['longitude']
-
         switch (callBack) {
           case Geofire.onKeyEntered:
             addDriver(map['key'], map['latitude'], map['longitude']);
             if (nearbyDriverKeysLoaded) {
               updateAvailabeDriver(map['key'], map['latitude'], map['longitude']);
             }
-
             break;
-
           case Geofire.onKeyExited:
             removeDriver(map['key']);
-
             break;
-
           case Geofire.onKeyMoved:
-            // Update your key's location
-            //fetchDriverData(map['key'], map['latitude'], map['longitude']);
             updateAvailabeDriver(map['key'], map['latitude'], map['longitude']);
 
             break;
 
           case Geofire.onGeoQueryReady:
-            // All Intial Data is loaded
-            //print(map['result']);
-            //fetchDriverData(map['key'], map['latitude'], map['longitude']);
             updateAvailabeDriver(map['key'], map['latitude'], map['longitude']);
 
             break;
         }
       }
-
-      //setState(() {});
     });
   }
 
@@ -95,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
             token: GeoFireHelper.nearByDriversList[i].token,
             latitude: latitude,
             longitude: longitude,
+            rating: GeoFireHelper.nearByDriversList[i].rating,
           );
           setState(() {
             GeoFireHelper.nearByDriversList.removeAt(i);
@@ -110,16 +97,18 @@ class _HomeScreenState extends State<HomeScreen> {
       var snap = await driverRef.child(key).once();
 
       if (snap != null) {
-        Driver driver = Driver(
-          key: key,
-          lastName: snap.value["last_name"],
-          firstName: snap.value["first_name"],
-          phone: snap.value["phone"],
-          carInfo: snap.value["car_info"],
-          token: snap.value["token"],
-          latitude: latitude,
-          longitude: longitude,
-        );
+        Driver driver = Driver.fromSnapshot(snap, latitude, longitude);
+        // Driver driver = Driver(
+        //   key: key,
+        //   lastName: snap.value["last_name"],
+        //   firstName: snap.value["first_name"],
+        //   phone: snap.value["phone"],
+        //   carInfo: snap.value["car_info"],
+        //   token: snap.value["token"],
+        //   latitude: latitude,
+        //   longitude: longitude,
+        //   rating: snap.value["rating"],
+        // );
         setState(() {
           GeoFireHelper.nearByDriversList.add(driver);
         });

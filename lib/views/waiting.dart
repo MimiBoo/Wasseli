@@ -3,12 +3,16 @@ import 'dart:async';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:steps_indicator/steps_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wasselli/DataHandler/appData.dart';
 import 'package:wasselli/config.dart';
 import 'package:wasselli/main.dart';
 import 'package:wasselli/tools/color.dart';
 import 'package:wasselli/views/home.dart';
+import 'package:wasselli/widgets/button.dart';
 
 class RequestScreen extends StatefulWidget {
   @override
@@ -252,27 +256,85 @@ class _RequestScreenState extends State<RequestScreen> {
                   )
                 ],
               )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
+            : status == "ended"
+                ? RatingScreen()
+                : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      TyperAnimatedTextKit(
-                        alignment: Alignment.center,
-                        text: [
-                          "Waiting For Driver",
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          TyperAnimatedTextKit(
+                            alignment: Alignment.center,
+                            text: [
+                              "Waiting For Driver",
+                            ],
+                            textStyle: TextStyle(fontSize: 30.0, fontFamily: "Bobbers"),
+                            textAlign: TextAlign.start,
+                          ),
                         ],
-                        textStyle: TextStyle(fontSize: 30.0, fontFamily: "Bobbers"),
-                        textAlign: TextAlign.start,
-                      ),
+                      )
                     ],
-                  )
-                ],
-              ),
+                  ),
       ),
     );
+  }
+}
+
+class RatingScreen extends StatelessWidget {
+  double rating = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 28, vertical: 28),
+      child: Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Rate This Trip',
+              style: TextStyle(fontFamily: 'NexaBold', fontSize: 20),
+            ),
+            SizedBox(height: 28),
+            SmoothStarRating(
+              color: Color(0xFFFFC107),
+              borderColor: mainBlack,
+              starCount: 5,
+              allowHalfRating: false,
+              size: 50,
+              onRated: (value) {
+                rating = value;
+                print(rating);
+              },
+            ),
+            SizedBox(height: 28),
+            CustomButton(
+              color: mainTeal,
+              onTap: () {
+                rateDriver(context, rating);
+              },
+              title: "Rate",
+              titleColor: Colors.white,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void rateDriver(BuildContext context, double rating) async {
+    var driver = Provider.of<AppData>(context, listen: false).selecteDriver;
+    var snap = await driverRef.child(driver.key).child("rating").once();
+    if (snap.value != null) {
+      double oldRating = snap.value.toDouble();
+      double newRating = (rating + oldRating) / 2;
+      await driverRef.child(driver.key).child("rating").set(newRating);
+    } else {
+      await driverRef.child(driver.key).child("rating").set(rating);
+    }
   }
 }
