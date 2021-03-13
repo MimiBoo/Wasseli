@@ -1,0 +1,131 @@
+{
+  "project_info": {
+    "project_number": "592573024563",
+    "firebase_url": "https://delivery-159a5.firebaseio.com",
+    "project_id": "delivery-159a5",
+    "storage_bucket": "delivery-159a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592573024563:android:7de619eec36356010ad646",
+        "android_client_info": {
+          "package_name": "app.wasselli"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "592573024563-nk02v0vaa39sqcls9em7ulcp14kqlkv3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.wasselli",
+            "certificate_hash": "e812d63e159ad25679f83a14a259ff8f438cd197"
+          }
+        },
+        {
+          "client_id": "592573024563-c6kqeuarag1avtvmkdj1757tpc7nan1n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOIr1q37zglcAq9Kyb2xyYiXPh1SZFEzo"
+        },
+        {
+          "current_key": "AIzaSyAtxymib6rp8rUez2nR9NsytlsELbe4s4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "592573024563-c6kqeuarag1avtvmkdj1757tpc7nan1n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592573024563:android:b9324a781a27cb610ad646",
+        "android_client_info": {
+          "package_name": "com.wasseli.wasseliDriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "592573024563-jg45q51f121585i0hoqahv95vkil252v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wasseli.wasseliDriver",
+            "certificate_hash": "e812d63e159ad25679f83a14a259ff8f438cd197"
+          }
+        },
+        {
+          "client_id": "592573024563-c6kqeuarag1avtvmkdj1757tpc7nan1n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOIr1q37zglcAq9Kyb2xyYiXPh1SZFEzo"
+        },
+        {
+          "current_key": "AIzaSyAtxymib6rp8rUez2nR9NsytlsELbe4s4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "592573024563-c6kqeuarag1avtvmkdj1757tpc7nan1n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592573024563:android:80c5bddbf9dbb88a0ad646",
+        "android_client_info": {
+          "package_name": "com.wasseli.wasseliapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "592573024563-pgaprt0a1jvf4lm0lnr0fjknnifp135q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wasseli.wasseliapp",
+            "certificate_hash": "e812d63e159ad25679f83a14a259ff8f438cd197"
+          }
+        },
+        {
+          "client_id": "592573024563-c6kqeuarag1avtvmkdj1757tpc7nan1n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOIr1q37zglcAq9Kyb2xyYiXPh1SZFEzo"
+        },
+        {
+          "current_key": "AIzaSyAtxymib6rp8rUez2nR9NsytlsELbe4s4o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "592573024563-c6kqeuarag1avtvmkdj1757tpc7nan1n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
