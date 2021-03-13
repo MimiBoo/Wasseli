@@ -48,7 +48,7 @@ class HelperMethods {
   }
 
   static int calculateFares(DirectionDetails directionDetails) {
-    var distence = directionDetails.durationValue;
+    var distence = directionDetails.distanceValue;
     if (distence <= 10000) {
       return 500;
     } else if (distence <= 20000 && distence >= 10000) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:wasselli/DataHandler/appData.dart';
@@ -10,6 +11,7 @@ import 'package:wasselli/main.dart';
 import 'package:wasselli/models/directionDetails.dart';
 import 'package:wasselli/models/driver.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:wasselli/views/profile.dart';
 import 'package:wasselli/widgets/driver_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -154,6 +156,43 @@ class _HomeScreenState extends State<HomeScreen> {
                   return DriverCard(GeoFireHelper.nearByDriversList[index]);
                 },
               ),
+        bottomNavigationBar: BottomAppBar(
+          child: Container(
+            height: 50,
+            color: mainBlack,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/images/menu.svg',
+                      fit: BoxFit.cover,
+                      color: Colors.white,
+                      width: 30,
+                    ),
+                    onPressed: () {},
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/images/profile.svg',
+                      fit: BoxFit.cover,
+                      color: Colors.white,
+                      width: 30,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown
     ]);
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Wasseli',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,

@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:steps_indicator/steps_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wasselli/config.dart';
 import 'package:wasselli/config.dart';
 import 'package:wasselli/main.dart';
 import 'package:wasselli/tools/color.dart';
@@ -30,6 +30,8 @@ class _RequestScreenState extends State<RequestScreen> {
       if (status == "accepted") {
         userRef.child(currentFirebaseUser.uid).child("history").child("${DateTime.now().month}-${DateTime.now().year}").child(requestRef.key).set(DateTime.now().toString());
       } else if (status == "canceled") {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => HomeScreen()), (Route<dynamic> route) => false);
+      } else if (status == "declined") {
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => HomeScreen()), (Route<dynamic> route) => false);
       }
       setState(() {
@@ -250,7 +252,26 @@ class _RequestScreenState extends State<RequestScreen> {
                   )
                 ],
               )
-            : Center(child: Text(status)),
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      TyperAnimatedTextKit(
+                        alignment: Alignment.center,
+                        text: [
+                          "Waiting For Driver",
+                        ],
+                        textStyle: TextStyle(fontSize: 30.0, fontFamily: "Bobbers"),
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  )
+                ],
+              ),
       ),
     );
   }
