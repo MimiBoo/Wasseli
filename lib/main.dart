@@ -8,6 +8,7 @@ import 'package:wasselli/DataHandler/appData.dart';
 import 'package:wasselli/config.dart';
 import 'package:wasselli/views/front_page.dart';
 import 'package:wasselli/views/home.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,15 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => AppData(),
-      child: MyApp(),
+      child: EasyLocalization(
+        supportedLocales: [
+          Locale('ar', 'DZ'),
+          Locale('en', 'US'),
+        ],
+        child: MyApp(),
+        path: 'assets/languages',
+        startLocale: Locale('ar', 'DZ'),
+      ),
     ),
   );
 }
@@ -26,15 +35,17 @@ DatabaseReference driverRef = FirebaseDatabase().reference().child('drivers');
 DatabaseReference requestRef = FirebaseDatabase.instance.reference().child('rides').push();
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown
     ]);
+    isLatin = context.locale.languageCode == "en";
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       title: 'Wasseli',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

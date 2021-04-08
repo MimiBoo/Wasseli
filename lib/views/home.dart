@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:wasselli/DataHandler/appData.dart';
@@ -11,6 +10,7 @@ import 'package:wasselli/main.dart';
 import 'package:wasselli/models/directionDetails.dart';
 import 'package:wasselli/models/driver.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/views/profile.dart';
 import 'package:wasselli/widgets/driver_card.dart';
 
@@ -98,17 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (snap != null) {
         Driver driver = Driver.fromSnapshot(snap, latitude, longitude);
-        // Driver driver = Driver(
-        //   key: key,
-        //   lastName: snap.value["last_name"],
-        //   firstName: snap.value["first_name"],
-        //   phone: snap.value["phone"],
-        //   carInfo: snap.value["car_info"],
-        //   token: snap.value["token"],
-        //   latitude: latitude,
-        //   longitude: longitude,
-        //   rating: snap.value["rating"],
-        // );
         setState(() {
           GeoFireHelper.nearByDriversList.add(driver);
         });
@@ -155,11 +144,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/images/menu.svg',
-                      fit: BoxFit.cover,
+                    icon: Icon(
+                      Wasseli.menu,
                       color: Colors.white,
-                      width: 30,
+                      size: 40,
                     ),
                     onPressed: () {},
                   ),
@@ -167,11 +155,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/images/profile.svg',
-                      fit: BoxFit.cover,
+                    icon: Icon(
+                      Wasseli.profile,
                       color: Colors.white,
-                      width: 30,
+                      size: 40,
                     ),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));

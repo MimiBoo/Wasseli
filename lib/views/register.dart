@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wasselli/Widgets/button.dart';
 import 'package:wasselli/Widgets/progressDialog.dart';
 import 'package:wasselli/config.dart';
 import 'package:wasselli/main.dart';
 import 'package:wasselli/tools/background.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/views/home.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // ignore: must_be_immutable
 class RegisterScreen extends StatelessWidget {
@@ -15,10 +16,13 @@ class RegisterScreen extends StatelessWidget {
   TextEditingController _firstCtrl = TextEditingController();
   TextEditingController _lastCtrl = TextEditingController();
 
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         resizeToAvoidBottomPadding: false,
         body: Stack(
           children: [
@@ -30,11 +34,10 @@ class RegisterScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).pop();
                 },
-                child: SvgPicture.asset(
-                  'assets/images/close.svg',
-                  fit: BoxFit.cover,
+                child: Icon(
+                  Wasseli.close,
                   color: Colors.white,
-                  width: 40,
+                  size: 40,
                 ),
               ),
             ),

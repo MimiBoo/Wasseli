@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:wasselli/Widgets/button.dart';
 import 'package:wasselli/tools/background.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/views/login.dart';
 
 class FrontPage extends StatelessWidget {
@@ -56,11 +56,10 @@ class FrontPage extends StatelessWidget {
               left: 176.5,
               child: DropdownButton(
                 underline: SizedBox(width: 0),
-                icon: SvgPicture.asset(
-                  'assets/images/language.svg',
-                  fit: BoxFit.cover,
+                icon: Icon(
+                  Wasseli.language,
                   color: Colors.white,
-                  width: 40,
+                  size: 40,
                 ),
                 items: [
                   DropdownMenuItem(child: Container(color: Colors.amber)),

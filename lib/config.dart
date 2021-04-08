@@ -15,13 +15,9 @@ Position currentPosition;
 
 Users currentUserInfo;
 RideDetails rideDetails;
+bool isLatin;
 
 int driverRequestTimeout = 60;
-String rideStatus = '';
-String driverStatus = 'Driver is coming';
-String carDetails = '';
-String driverName = '';
-String driverPhone = '';
 
 double starCounter = 0;
 String title = '';

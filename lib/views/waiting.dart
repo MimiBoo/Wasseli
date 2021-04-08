@@ -283,47 +283,102 @@ class _RequestScreenState extends State<RequestScreen> {
   }
 }
 
-class RatingScreen extends StatelessWidget {
+class RatingScreen extends StatefulWidget {
+  @override
+  _RatingScreenState createState() => _RatingScreenState();
+}
+
+class _RatingScreenState extends State<RatingScreen> {
   double rating = 0;
+
+  int step = 1;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 28, vertical: 28),
-      child: Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Rate This Trip',
-              style: TextStyle(fontFamily: 'NexaBold', fontSize: 20),
+    return step == 1
+        ? Padding(
+            padding: EdgeInsets.symmetric(horizontal: 28, vertical: 28),
+            child: Container(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 22),
+                  Text(
+                    'Cash Payment',
+                    style: TextStyle(color: mainBlack, fontFamily: 'NexaBold', fontSize: 22),
+                  ),
+                  SizedBox(height: 22),
+                  Divider(color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text("${rideDetails.price} DA", style: TextStyle(fontSize: 55, fontFamily: 'NexaBold', color: mainBlack)),
+                  SizedBox(height: 16),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('This is the trip price.', style: TextStyle(fontFamily: 'NexaBold', color: Colors.grey), textAlign: TextAlign.center),
+                  ),
+                  SizedBox(height: 30),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        step = 2;
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * .05),
+                      height: 53,
+                      decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+                      child: Center(
+                        child: Text(
+                          'Collect Cash',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white, fontFamily: 'NexaBold', fontSize: 22),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 28),
-            SmoothStarRating(
-              color: Color(0xFFFFC107),
-              borderColor: mainBlack,
-              starCount: 5,
-              allowHalfRating: false,
-              size: 50,
-              onRated: (value) {
-                rating = value;
-                print(rating);
-              },
+          )
+        : Padding(
+            padding: EdgeInsets.symmetric(horizontal: 28, vertical: 28),
+            child: Container(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Rate This Trip',
+                    style: TextStyle(fontFamily: 'NexaBold', fontSize: 20),
+                  ),
+                  SizedBox(height: 28),
+                  SmoothStarRating(
+                    color: Color(0xFFFFC107),
+                    borderColor: mainBlack,
+                    starCount: 5,
+                    allowHalfRating: false,
+                    size: 50,
+                    onRated: (value) {
+                      rating = value;
+                    },
+                  ),
+                  SizedBox(height: 28),
+                  CustomButton(
+                    color: mainTeal,
+                    onTap: () {
+                      rateDriver(context, rating);
+                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => HomeScreen()), (Route<dynamic> route) => false);
+                    },
+                    title: "Rate",
+                    titleColor: Colors.white,
+                  )
+                ],
+              ),
             ),
-            SizedBox(height: 28),
-            CustomButton(
-              color: mainTeal,
-              onTap: () {
-                rateDriver(context, rating);
-              },
-              title: "Rate",
-              titleColor: Colors.white,
-            )
-          ],
-        ),
-      ),
-    );
+          );
   }
 
   void rateDriver(BuildContext context, double rating) async {

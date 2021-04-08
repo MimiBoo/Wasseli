@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wasselli/Widgets/button.dart';
 import 'package:wasselli/tools/background.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/views/otp.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,11 +29,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   Navigator.of(context).pop();
                 },
-                child: SvgPicture.asset(
-                  'assets/images/close.svg',
-                  fit: BoxFit.cover,
+                child: Icon(
+                  Wasseli.close,
                   color: Colors.white,
-                  width: 40,
+                  size: 40,
                 ),
               ),
             ),

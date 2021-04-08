@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:wasselli/config.dart';
 import 'package:wasselli/main.dart';
 import 'package:wasselli/tools/background.dart';
+import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/views/home.dart';
 import 'package:wasselli/views/register.dart';
 
@@ -45,11 +45,10 @@ class _OtpScreenState extends State<OtpScreen> {
                 onTap: () {
                   Navigator.of(context).pop();
                 },
-                child: SvgPicture.asset(
-                  'assets/images/close.svg',
-                  fit: BoxFit.cover,
+                child: Icon(
+                  Wasseli.close,
                   color: Colors.white,
-                  width: 40,
+                  size: 40,
                 ),
               ),
             ),
