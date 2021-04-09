@@ -65,7 +65,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     items: [
                       DropdownMenuItem(
-                        value: "us",
+                        value: "en",
                         child: Row(
                           children: [
                             Text('🇺🇸'),

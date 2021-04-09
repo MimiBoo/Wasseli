@@ -13,6 +13,7 @@ import 'package:wasselli/tools/color.dart';
 import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/views/profile.dart';
 import 'package:wasselli/widgets/driver_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -119,14 +120,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Near By Drivers ${GeoFireHelper.nearByDriversList.length}'),
+          title: Text('${"near_by_drivers".tr()} ${GeoFireHelper.nearByDriversList.length}'),
           backgroundColor: mainBlack,
           centerTitle: true,
           elevation: 0,
         ),
         body: GeoFireHelper.nearByDriversList.length == 0
             ? Center(
-                child: Text('No Driver'),
+                child: Text("no_drivers".tr()),
               )
             : ListView.builder(
                 itemCount: GeoFireHelper.nearByDriversList.length,

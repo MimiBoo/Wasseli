@@ -15,6 +15,7 @@ import 'package:wasselli/views/home.dart';
 import 'package:wasselli/views/waiting.dart';
 import 'package:wasselli/widgets/address_tile.dart';
 import 'package:wasselli/widgets/ride_type_tile.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class OrderScreen extends StatefulWidget {
   @override
@@ -101,7 +102,7 @@ class _OrderScreenState extends State<OrderScreen> {
           backgroundColor: mainBlack,
           elevation: 0,
           title: Text(
-            'Create Trip',
+            'create_trip'.tr(),
             style: TextStyle(fontFamily: 'NexaLight', fontSize: 20),
           ),
           actions: [
@@ -163,14 +164,14 @@ class _OrderScreenState extends State<OrderScreen> {
                         ),
                         SizedBox(width: 16),
                         Text(
-                          'Cash',
+                          'payment_method'.tr(),
                           style: TextStyle(fontSize: 16, fontFamily: 'NexaBold', color: mainBlack),
                         ),
                       ],
                     ),
                     SizedBox(width: 10),
                     Text(
-                      '$price DA',
+                      '$price ${"currency".tr()}',
                       style: TextStyle(fontSize: 20, fontFamily: "NexaBold"),
                     ),
                   ],
@@ -220,7 +221,7 @@ class _RideTypeListState extends State<RideTypeList> {
           width: 50,
           height: 50,
         ),
-        title: "Mini Truck"),
+        title: "mini_truck".tr()),
   ];
   @override
   Widget build(BuildContext context) {

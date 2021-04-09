@@ -44,5 +44,15 @@
     "new_ride_request": "طلب توصيل جديد",
     "empty_phone": "الرجاء ادخال رقم هاتف",
     "empty_name": "الرجاء ادخال اسم و لقب",
-    "empty_car_info": "الرجاء ادخال معلومات السيارة"
+    "empty_car_info": "الرجاء ادخال معلومات السيارة",
+    "near_by_drivers": "السائقين المتوفرين",
+    "no_drivers": "لا يوجد سائقين",
+    "no_place_found": "لم يتم إيجاد المكان",
+    "where": "الى أين؟",
+    "create_trip": "إنشاء رحلة",
+    "address": "عنوان",
+    "from": "من",
+    "to": "الى",
+    "request_trip": "طلب رحلة",
+    "ongoing_ride": "رحلة مستمرة"
 }

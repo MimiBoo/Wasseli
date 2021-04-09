@@ -44,5 +44,15 @@
     "new_ride_request": "New Ride Request",
     "empty_phone": "Please enter a phone number",
     "empty_name": "Please enter a first and last name",
-    "empty_car_info": "Please enter car info"
+    "empty_car_info": "Please enter car info",
+    "near_by_drivers": "Near By Drivers",
+    "no_drivers": "No Drivers",
+    "no_place_found": "No Places Found",
+    "where": "Where to deliver?",
+    "create_trip": "Create Trip",
+    "address": "Address",
+    "from": "from",
+    "to": "to",
+    "request_trip": "Request Trip",
+    "ongoing_ride": "Ongoing Ride"
 }

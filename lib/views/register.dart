@@ -28,20 +28,6 @@ class RegisterScreen extends StatelessWidget {
           children: [
             BackgroundBlur(),
             Positioned(
-              top: 30,
-              left: 25,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Icon(
-                  Wasseli.close,
-                  color: Colors.white,
-                  size: 40,
-                ),
-              ),
-            ),
-            Positioned(
               left: 30,
               right: 30,
               top: MediaQuery.of(context).size.height / 6,
@@ -49,7 +35,7 @@ class RegisterScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Register',
+                    'register_title'.tr(),
                     style: TextStyle(color: Colors.white, fontFamily: 'NexaBold', fontSize: 40),
                   ),
                   SizedBox(height: 30),
@@ -65,7 +51,7 @@ class RegisterScreen extends StatelessWidget {
                           decoration: InputDecoration(
                             fillColor: Colors.white.withAlpha(200),
                             filled: true,
-                            hintText: 'First Name',
+                            hintText: 'first_name'.tr(),
                             hintStyle: TextStyle(fontFamily: 'NexaLight', fontSize: 25, color: hintColor),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
                           ),
@@ -82,7 +68,7 @@ class RegisterScreen extends StatelessWidget {
                           decoration: InputDecoration(
                             fillColor: Colors.white.withAlpha(200),
                             filled: true,
-                            hintText: 'Last Name',
+                            hintText: 'last_name'.tr(),
                             hintStyle: TextStyle(fontFamily: 'NexaLight', fontSize: 25, color: hintColor),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),
                           ),
@@ -90,7 +76,7 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 18),
                       CustomButton(
-                        title: 'Register',
+                        title: 'register_button'.tr(),
                         color: mainTeal,
                         onTap: () {
                           registerNewUser(context);
@@ -109,19 +95,25 @@ class RegisterScreen extends StatelessWidget {
   }
 
   void registerNewUser(BuildContext context) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return ProgressDialog('Registering, Please wait...');
-      },
-    );
-    Map userDataMap = {
-      'first_name': _firstCtrl.text.trim(),
-      'last_name': _lastCtrl.text.trim(),
-      'phone': '+2130$phone',
-    };
-    userRef.child(currentFirebaseUser.uid).set(userDataMap);
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+    if (_firstCtrl.text.isNotEmpty && _lastCtrl.text.isNotEmpty) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return ProgressDialog('Registering, Please wait...');
+        },
+      );
+      Map userDataMap = {
+        'first_name': _firstCtrl.text.trim(),
+        'last_name': _lastCtrl.text.trim(),
+        'phone': '+2130$phone',
+      };
+      userRef.child(currentFirebaseUser.uid).set(userDataMap);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomeScreen()));
+    } else {
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text("empty_name".tr()),
+      ));
+    }
   }
 }

@@ -13,6 +13,7 @@ import 'package:wasselli/main.dart';
 import 'package:wasselli/tools/color.dart';
 import 'package:wasselli/views/home.dart';
 import 'package:wasselli/widgets/button.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class RequestScreen extends StatefulWidget {
   @override
@@ -57,7 +58,7 @@ class _RequestScreenState extends State<RequestScreen> {
         appBar: AppBar(
           backgroundColor: mainBlack,
           title: Text(
-            'Ongoing Ride',
+            'ongoing_ride'.tr(),
             style: TextStyle(fontFamily: 'NexaLight', fontSize: 20),
           ),
           centerTitle: true,
@@ -160,7 +161,7 @@ class _RequestScreenState extends State<RequestScreen> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                'From',
+                                                'from'.tr(),
                                                 style: TextStyle(fontFamily: 'NexaLight', fontSize: 14, color: Colors.grey),
                                               ),
                                             ],
@@ -181,7 +182,7 @@ class _RequestScreenState extends State<RequestScreen> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            'To',
+                                            'to'.tr(),
                                             style: TextStyle(fontFamily: 'NexaLight', fontSize: 14, color: Colors.grey),
                                           ),
                                           SizedBox(height: 5),
@@ -217,7 +218,7 @@ class _RequestScreenState extends State<RequestScreen> {
                                     decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(10)),
                                     child: Center(
                                       child: Text(
-                                        "CANCEL",
+                                        "cancel_button".tr().toUpperCase(),
                                         style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: "NexaBold"),
                                       ),
                                     ),

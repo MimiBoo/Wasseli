@@ -5,6 +5,7 @@ import 'package:wasselli/models/placePrediction.dart';
 import 'package:wasselli/tools/color.dart';
 import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/widgets/location_item.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -55,7 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             findPlaces(value);
                           },
                           decoration: InputDecoration(
-                            hintText: "Where to deliver?",
+                            hintText: "where".tr(),
                             hintStyle: TextStyle(color: Colors.white, fontFamily: 'NexaLight', fontSize: 25),
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
@@ -83,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                   )
-                : Expanded(child: Center(child: Text('No Places Found'))),
+                : Expanded(child: Center(child: Text('no_place_found'.tr()))),
           ],
         ),
       ),

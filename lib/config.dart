@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:wasselli/models/ride_details.dart';
 import 'package:wasselli/models/users.dart';
@@ -12,6 +13,8 @@ String serverKey = 'key=AAAAifgayTM:APA91bHCu_COvZaRQL8wngyYaA6cl8MV5ay0jgRfCvZi
 User currentFirebaseUser;
 
 Position currentPosition;
+
+GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: "Main Navigator");
 
 Users currentUserInfo;
 RideDetails rideDetails;

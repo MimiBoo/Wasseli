@@ -24,7 +24,7 @@ void main() async {
         ],
         child: MyApp(),
         path: 'assets/languages',
-        startLocale: Locale('ar', 'DZ'),
+        startLocale: Locale('en', 'US'),
       ),
     ),
   );
@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
     ]);
     isLatin = context.locale.languageCode == "en";
     return MaterialApp(
+      navigatorKey: navigatorKey,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
