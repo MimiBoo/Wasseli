@@ -11,6 +11,6 @@ class Users {
     firstName = dataSnapshot.value['first_name'];
     lastName = dataSnapshot.value['last_name'];
     phone = dataSnapshot.value['phone'];
-    rating = dataSnapshot.value['rating'];
+    rating = dataSnapshot.value['rating'] == null ? 0.0 : dataSnapshot.value['rating'].toDouble();
   }
 }

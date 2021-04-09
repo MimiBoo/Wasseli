@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:wasselli/models/ride_details.dart';
 import 'package:wasselli/models/users.dart';
@@ -13,15 +14,13 @@ User currentFirebaseUser;
 
 Position currentPosition;
 
+GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: "Main Navigator");
+
 Users currentUserInfo;
 RideDetails rideDetails;
+bool isLatin;
 
 int driverRequestTimeout = 60;
-String rideStatus = '';
-String driverStatus = 'Driver is coming';
-String carDetails = '';
-String driverName = '';
-String driverPhone = '';
 
 double starCounter = 0;
 String title = '';

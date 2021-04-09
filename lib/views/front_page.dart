@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:wasselli/Widgets/button.dart';
 import 'package:wasselli/tools/background.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/views/login.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-class FrontPage extends StatelessWidget {
+import '../config.dart';
+
+class FrontPage extends StatefulWidget {
+  @override
+  _FrontPageState createState() => _FrontPageState();
+}
+
+class _FrontPageState extends State<FrontPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,18 +24,19 @@ class FrontPage extends StatelessWidget {
             BackgroundBlur(),
             //App title
             Positioned(
-              top: 74,
-              left: 25,
+              top: 30,
+              left: isLatin ? 25 : null,
+              right: isLatin ? null : 25,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'welcome to',
+                    'welcome'.tr(),
                     style: TextStyle(color: Colors.white, fontFamily: "Nirmala", fontSize: 30),
                   ),
                   Text(
-                    'Wasseli',
+                    'app_name'.tr(),
                     style: TextStyle(color: Colors.white, fontFamily: "MS", fontSize: 85),
                   ),
                 ],
@@ -40,7 +49,7 @@ class FrontPage extends StatelessWidget {
               child: Column(
                 children: [
                   CustomButton(
-                    title: 'Authenticate',
+                    title: 'authenticate'.tr(),
                     titleColor: mainTeal,
                     color: Colors.white,
                     onTap: () {
@@ -52,21 +61,40 @@ class FrontPage extends StatelessWidget {
             ),
             //Language dropdown button
             Positioned(
+              left: isLatin ? 100.5 : null,
+              right: isLatin ? null : 100.5,
               bottom: 86,
-              left: 176.5,
               child: DropdownButton(
-                underline: SizedBox(width: 0),
-                icon: SvgPicture.asset(
-                  'assets/images/language.svg',
-                  fit: BoxFit.cover,
+                underline: SizedBox(),
+                icon: Icon(
+                  Wasseli.language,
                   color: Colors.white,
-                  width: 40,
+                  size: 40,
                 ),
                 items: [
-                  DropdownMenuItem(child: Container(color: Colors.amber)),
-                  DropdownMenuItem(child: Container(color: Colors.amber)),
+                  DropdownMenuItem(
+                    value: "en",
+                    child: Row(
+                      children: [
+                        Text('🇺🇸'),
+                        Text('English'),
+                      ],
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: "ar",
+                    child: Row(
+                      children: [
+                        Text('🇩🇿'),
+                        Text('العربية'),
+                      ],
+                    ),
+                  ),
                 ],
-                onChanged: (val) {},
+                onChanged: (value) {
+                  print("VALUE: $value");
+                  _changeLanguage(context, value);
+                },
               ),
             ),
             //copyright
@@ -82,5 +110,23 @@ class FrontPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _changeLanguage(BuildContext context, String languageCode) {
+    print("CODE: $languageCode");
+    switch (languageCode) {
+      case 'en':
+        setState(() {
+          context.locale = Locale('en', 'US');
+          isLatin = true;
+        });
+        break;
+      case 'ar':
+        setState(() {
+          context.locale = Locale('ar', 'DZ');
+          isLatin = false;
+        });
+        break;
+    }
   }
 }

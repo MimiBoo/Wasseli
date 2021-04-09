@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:steps_indicator/steps_indicator.dart';
 import 'package:wasselli/DataHandler/appData.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddressTile extends StatelessWidget {
   @override
@@ -13,7 +14,7 @@ class AddressTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Address',
+            'address'.tr(),
             style: TextStyle(fontFamily: 'NexaBold', fontSize: 20),
           ),
           SizedBox(height: 28),
@@ -42,7 +43,7 @@ class AddressTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'From',
+                          'from'.tr(),
                           style: TextStyle(fontFamily: 'NexaLight', fontSize: 14, color: Colors.grey),
                         ),
                         SizedBox(height: 5),
@@ -60,7 +61,7 @@ class AddressTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'To',
+                          'to'.tr(),
                           style: TextStyle(fontFamily: 'NexaLight', fontSize: 14, color: Colors.grey),
                         ),
                         SizedBox(height: 5),

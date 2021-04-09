@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:wasselli/config.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/views/front_page.dart';
+import 'package:wasselli/views/settings.dart';
 import 'package:wasselli/widgets/button.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -17,19 +19,17 @@ class ProfileScreen extends StatelessWidget {
           backgroundColor: mainBlack,
           elevation: 0,
           leading: IconButton(
-            icon: SvgPicture.asset(
-              'assets/images/close.svg',
-              fit: BoxFit.cover,
+            icon: Icon(
+              Wasseli.close,
               color: Colors.white,
-              width: 20,
-              height: 20,
+              size: 40,
             ),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           title: Text(
-            'Account Information',
+            'profile'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontFamily: 'NexaLight',
@@ -39,15 +39,13 @@ class ProfileScreen extends StatelessWidget {
           centerTitle: true,
           actions: [
             IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/settings.svg',
-                fit: BoxFit.cover,
+              icon: Icon(
+                Wasseli.settings,
                 color: Colors.white,
-                width: 30,
-                height: 30,
+                size: 40,
               ),
               onPressed: () {
-                //Navigator.of(context).push(MaterialPageRoute(builder: (_) => SettingsScreen()));
+                navigatorKey.currentState.push(MaterialPageRoute(builder: (_) => SettingsScreen()));
               },
             ),
           ],
@@ -82,6 +80,7 @@ class ProfileScreen extends StatelessWidget {
                           style: TextStyle(color: Colors.white, fontFamily: 'NexaLight', fontSize: 25),
                         ),
                         SmoothStarRating(
+                          rating: currentUserInfo.rating,
                           color: Color(0xFFFFC107),
                           borderColor: Colors.white,
                           isReadOnly: true,
@@ -112,29 +111,29 @@ class ProfileScreen extends StatelessWidget {
               //   ],
               // ),
               // SizedBox(height: 42),
+              // Row(
+              //   children: [
+              //     Text(
+              //       'EMAIL:',
+              //       style: TextStyle(color: mainTeal, fontSize: 25, fontFamily: 'NexaBold'),
+              //     ),
+              //     SizedBox(width: 10),
+              //     Text(
+              //       'melkia02@gmail.com',
+              //       style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'NexaBold'),
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(height: 42),
               Row(
                 children: [
                   Text(
-                    'EMAIL:',
-                    style: TextStyle(color: mainTeal, fontSize: 25, fontFamily: 'NexaBold'),
-                  ),
-                  SizedBox(width: 10),
-                  Text(
-                    'melkia02@gmail.com',
-                    style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'NexaBold'),
-                  ),
-                ],
-              ),
-              SizedBox(height: 42),
-              Row(
-                children: [
-                  Text(
-                    'PHONE:',
+                    '${"profile_phone".tr()}:',
                     style: TextStyle(color: mainTeal, fontSize: 20, fontFamily: 'NexaBold'),
                   ),
                   SizedBox(width: 10),
                   Text(
-                    currentUserInfo.phone,
+                    context.locale.languageCode == "ar" ? currentUserInfo.phone.split('+').reversed.join('+') : currentUserInfo.phone,
                     style: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'NexaBold'),
                   ),
                 ],
@@ -144,10 +143,10 @@ class ProfileScreen extends StatelessWidget {
                 color: dviderColor,
               ),
               SizedBox(height: 42),
-              CustomButton(title: 'Edit Profile', color: mainTeal, onTap: () {}, titleColor: Colors.white),
+              CustomButton(title: 'profile_edit'.tr(), color: mainTeal, onTap: () {}, titleColor: Colors.white),
               SizedBox(height: 18),
               CustomButton(
-                  title: 'Sign Out',
+                  title: 'logout'.tr(),
                   color: Colors.red,
                   onTap: () {
                     FirebaseAuth.instance.signOut();

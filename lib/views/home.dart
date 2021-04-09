@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:wasselli/DataHandler/appData.dart';
@@ -11,8 +10,10 @@ import 'package:wasselli/main.dart';
 import 'package:wasselli/models/directionDetails.dart';
 import 'package:wasselli/models/driver.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/views/profile.dart';
 import 'package:wasselli/widgets/driver_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -38,41 +39,27 @@ class _HomeScreenState extends State<HomeScreen> {
       if (map != null) {
         var callBack = map['callBack'];
 
-        //latitude will be retrieved from map['latitude']
-        //longitude will be retrieved from map['longitude']
-
         switch (callBack) {
           case Geofire.onKeyEntered:
             addDriver(map['key'], map['latitude'], map['longitude']);
             if (nearbyDriverKeysLoaded) {
               updateAvailabeDriver(map['key'], map['latitude'], map['longitude']);
             }
-
             break;
-
           case Geofire.onKeyExited:
             removeDriver(map['key']);
-
             break;
-
           case Geofire.onKeyMoved:
-            // Update your key's location
-            //fetchDriverData(map['key'], map['latitude'], map['longitude']);
             updateAvailabeDriver(map['key'], map['latitude'], map['longitude']);
 
             break;
 
           case Geofire.onGeoQueryReady:
-            // All Intial Data is loaded
-            //print(map['result']);
-            //fetchDriverData(map['key'], map['latitude'], map['longitude']);
             updateAvailabeDriver(map['key'], map['latitude'], map['longitude']);
 
             break;
         }
       }
-
-      //setState(() {});
     });
   }
 
@@ -95,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
             token: GeoFireHelper.nearByDriversList[i].token,
             latitude: latitude,
             longitude: longitude,
+            rating: GeoFireHelper.nearByDriversList[i].rating,
           );
           setState(() {
             GeoFireHelper.nearByDriversList.removeAt(i);
@@ -110,16 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
       var snap = await driverRef.child(key).once();
 
       if (snap != null) {
-        Driver driver = Driver(
-          key: key,
-          lastName: snap.value["last_name"],
-          firstName: snap.value["first_name"],
-          phone: snap.value["phone"],
-          carInfo: snap.value["car_info"],
-          token: snap.value["token"],
-          latitude: latitude,
-          longitude: longitude,
-        );
+        Driver driver = Driver.fromSnapshot(snap, latitude, longitude);
         setState(() {
           GeoFireHelper.nearByDriversList.add(driver);
         });
@@ -141,14 +120,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Near By Drivers ${GeoFireHelper.nearByDriversList.length}'),
+          title: Text('${"near_by_drivers".tr()} ${GeoFireHelper.nearByDriversList.length}'),
           backgroundColor: mainBlack,
           centerTitle: true,
           elevation: 0,
         ),
         body: GeoFireHelper.nearByDriversList.length == 0
             ? Center(
-                child: Text('No Driver'),
+                child: Text("no_drivers".tr()),
               )
             : ListView.builder(
                 itemCount: GeoFireHelper.nearByDriversList.length,
@@ -166,11 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/images/menu.svg',
-                      fit: BoxFit.cover,
+                    icon: Icon(
+                      Wasseli.menu,
                       color: Colors.white,
-                      width: 30,
+                      size: 40,
                     ),
                     onPressed: () {},
                   ),
@@ -178,11 +156,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/images/profile.svg',
-                      fit: BoxFit.cover,
+                    icon: Icon(
+                      Wasseli.profile,
                       color: Colors.white,
-                      width: 30,
+                      size: 40,
                     ),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));

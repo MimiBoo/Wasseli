@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wasselli/config.dart';
 import 'package:wasselli/helpers/requestHelper.dart';
 import 'package:wasselli/models/placePrediction.dart';
 import 'package:wasselli/tools/color.dart';
+import 'package:wasselli/tools/wasseli_icons.dart';
 import 'package:wasselli/widgets/location_item.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -21,12 +22,10 @@ class _SearchScreenState extends State<SearchScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             IconButton(
-              icon: SvgPicture.asset(
-                'assets/images/close.svg',
-                fit: BoxFit.cover,
-                color: mainBlack,
-                width: 20,
-                height: 20,
+              icon: Icon(
+                Wasseli.close,
+                color: Colors.white,
+                size: 40,
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -42,11 +41,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 20),
-                        child: SvgPicture.asset(
-                          'assets/images/pin.svg',
-                          fit: BoxFit.cover,
+                        child: Icon(
+                          Wasseli.pin,
                           color: Colors.white,
-                          width: 30,
+                          size: 40,
                         ),
                       ),
                       SizedBox(width: 10),
@@ -58,7 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             findPlaces(value);
                           },
                           decoration: InputDecoration(
-                            hintText: "Where to deliver?",
+                            hintText: "where".tr(),
                             hintStyle: TextStyle(color: Colors.white, fontFamily: 'NexaLight', fontSize: 25),
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white),
@@ -86,7 +84,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                   )
-                : Expanded(child: Center(child: Text('No Places Found'))),
+                : Expanded(child: Center(child: Text('no_place_found'.tr()))),
           ],
         ),
       ),
